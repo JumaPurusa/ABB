@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.abb">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/abb_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/abb_icon"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".Activities.ChatRoom"></activity>
+        <activity android:name=".Activities.BecomeDonor" />
+        <activity android:name=".Activities.Notifications" />
+        <activity android:name=".Activities.Welcome">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activities.ImageUpload" />
+        <activity android:name=".Activities.RequestBlood" />
+        <activity android:name=".Activities.Registration" />
+        <activity android:name=".Activities.Login" />
+        <activity android:name=".MainActivity" />
+    </application>
+
+</manifest>
