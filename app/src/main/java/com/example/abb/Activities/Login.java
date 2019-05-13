@@ -41,9 +41,19 @@ public class Login extends AppCompatActivity {
     private Button loginBtn, registerBtn;
     private RelativeLayout relativeLayout;
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        if(restoreLoginPrefs()){
+            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(mainIntent);
+            finish();
+        }
+
         setContentView(R.layout.activity_login);
 
         relativeLayout = findViewById(R.id.login_layout);
@@ -56,12 +66,13 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent registerIntent = new Intent(Login.this, Registration.class);
+                registerIntent.putExtra("login", "login");
                 startActivity(registerIntent);
                 overridePendingTransition(R.anim.right_in, R.anim.left_out);
             }
         });
 
-        SharedPreferences sharedPreferences = getSharedPreferences("abb", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("introPrefs", MODE_PRIVATE);
 
         loginBtn.setOnClickListener(new View.OnClickListener( ) {
             @Override
@@ -108,11 +119,14 @@ public class Login extends AppCompatActivity {
                                     } else {
 
                                         progressDialog.dismiss();
-                                        SaveSettings.userProfile(Login.this, response);
+                                        //SaveSettings.userProfile(Login.this, response);
                                         Intent mainIntent = new Intent(Login.this, MainActivity.class);
                                         mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(mainIntent);
                                         //overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                                        // save the value if the user to sharedPreferences if the user is successfully logged in
+                                        savePrefsData();
                                         finish();
                                     }
 
@@ -168,5 +182,25 @@ public class Login extends AppCompatActivity {
 
             }
         });
+    }
+
+    private boolean restoreLoginPrefs(){
+
+        SharedPreferences preferences = getApplicationContext()
+                .getSharedPreferences("introPrefs", MODE_PRIVATE);
+
+        return preferences.getBoolean("isLoggedIn", false);
+    }
+
+    private void savePrefsData(){
+        SharedPreferences.Editor prefs = sharedPreferences.edit();
+        prefs.putBoolean("isLoggedIn", true);
+        prefs.apply();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
     }
 }

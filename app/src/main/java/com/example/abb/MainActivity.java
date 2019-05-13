@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                         if(viewPager.getCurrentItem() == 0){
                             viewPager.setCurrentItem(1);
                         }else if(viewPager.getCurrentItem() == 1){

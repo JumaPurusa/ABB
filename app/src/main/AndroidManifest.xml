@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.abb">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,10 +12,15 @@
         android:roundIcon="@drawable/abb_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.ChatRoom"></activity>
+        <activity android:name=".Activities.IntroRegistration"></activity>
+        <activity android:name=".Activities.IntoScreen">
+
+        </activity>
+        <activity android:name=".Activities.ChatRoom" />
         <activity android:name=".Activities.BecomeDonor" />
         <activity android:name=".Activities.Notifications" />
-        <activity android:name=".Activities.Welcome">
+        <activity android:name=".Activities.Welcome"
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

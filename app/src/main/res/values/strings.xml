@@ -10,4 +10,16 @@
     <string name="please_confirm_password">Please confirm password</string>
     <string name="invalid_email">Invalid email address</string>
 
+    <!-- Intro Screen -->
+    <string name="next">NEXT</string>
+    <string name="request_blood">Request Blood</string>
+    <string name="become_donor">Become Donor</string>
+    <string name="chart_room">Chart Room</string>
+    <string name="intro_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Ut enim ad minim veniam.
+    </string>
+    <string name="get_started">Get Started</string>
+    <string name="skip">SKIP</string>
+
 </resources>

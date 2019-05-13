@@ -17,4 +17,13 @@
         <item name="android:windowExitTransition" tools:targetApi="lollipop">@transition/fading_transition</item>
     </style>
 
+    <style name="AppTheme.Splash" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/color_grey_200</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+
+    <style name="AppTheme.Translucent" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
 </resources>

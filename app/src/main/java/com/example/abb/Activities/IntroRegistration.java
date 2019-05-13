@@ -3,21 +3,20 @@ package com.example.abb.Activities;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -36,21 +35,21 @@ import com.example.abb.Utils.MySingleton;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Registration extends AppCompatActivity {
+public class IntroRegistration extends AppCompatActivity {
 
     private EditText fullnameEdit, usernameEdit, emailEdit, passwordEdit, confirmPassEdit;
     private Button registerBtn;
-    private TextView signIn;
     private LinearLayout registerLayout;
-
-    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
 
-        sharedPreferences = getApplicationContext().getSharedPreferences("introPrefs", MODE_PRIVATE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_intro_registration);
 
         registerLayout = findViewById(R.id.register_layout);
         fullnameEdit = findViewById(R.id.full_name);
@@ -60,30 +59,6 @@ public class Registration extends AppCompatActivity {
         confirmPassEdit = findViewById(R.id.confirm_password);
 
         registerBtn = findViewById(R.id.sign_up);
-
-        final Intent intent = getIntent();
-
-
-        findViewById(R.id.sign_in).setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            if(intent.hasExtra("login")){
-                                finish();
-                                overridePendingTransition(R.anim.left_in, R.anim.right_out);
-                            }else{
-                                Intent loginIntent = new Intent(getApplicationContext(), Login.class);
-                                startActivity(loginIntent);
-                                finish();
-                            }
-                            startActivity(new Intent(getApplicationContext(), Login.class));
-                            finish();
-
-                        }
-                    }
-            );
-
 
         registerBtn.setOnClickListener(
                 new View.OnClickListener() {
@@ -115,7 +90,7 @@ public class Registration extends AppCompatActivity {
                             Snackbar.make(registerLayout, R.string.password_matches, Snackbar.LENGTH_SHORT).show();
                         }else{
 
-                            final ProgressDialog progressDialog = new ProgressDialog(Registration.this);
+                            final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
                             progressDialog.setMessage("Please wait...");
                             progressDialog.setCancelable(false);
                             progressDialog.show();
@@ -124,7 +99,7 @@ public class Registration extends AppCompatActivity {
                                 @Override
                                 public void onResponse(String response) {
                                     AlertDialog.Builder builder =
-                                            new AlertDialog.Builder(Registration.this);
+                                            new AlertDialog.Builder(getApplicationContext());
 
                                     if(response.contains("Email already exists")){
                                         progressDialog.dismiss();
@@ -132,9 +107,10 @@ public class Registration extends AppCompatActivity {
                                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener( ) {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                Intent loginIntent = new Intent(Registration.this, Login.class);
+                                                Intent loginIntent = new Intent(getApplicationContext(), Login.class);
                                                 startActivity(loginIntent);
-                                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                finish();
+                                                //overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                             }
                                         });
 
@@ -143,14 +119,13 @@ public class Registration extends AppCompatActivity {
                                     }else if(response.contains("Please verify your email")){
                                         progressDialog.setMessage(response);
                                         progressDialog.setCancelable(true);
-                                        ProgressDialog progressDialog2 = new ProgressDialog(Registration.this);
+                                        ProgressDialog progressDialog2 = new ProgressDialog(getApplicationContext());
                                         progressDialog2.setMessage(response);
 
                                         // what's next
 
                                     }
 
-                                    saveRegisterData();
                                     Log.d("response: ", response);
                                     //Toast.makeText(Registration.this, response, Toast.LENGTH_SHORT).show( );
 
@@ -205,43 +180,11 @@ public class Registration extends AppCompatActivity {
                     }
                 }
         );
-
     }
-
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        if(getIntent().hasExtra("login")){
-            finish();
-            overridePendingTransition(R.anim.left_in, R.anim.right_out);
-        }else{
-            finishAffinity();
-        }
+        finishAffinity();
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if(item.getItemId() == R.id.home){
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private boolean isRegisterAlready(){
-        SharedPreferences preferences = getApplicationContext()
-                .getSharedPreferences("introPrefs", MODE_PRIVATE);
-
-        return preferences.getBoolean("isRegisterAlready", false);
-    }
-
-    private void saveRegisterData(){
-
-        SharedPreferences.Editor prefs = sharedPreferences.edit();
-        prefs.putBoolean("isRegisterAlready", true);
-        prefs.apply();
-    }
-
 }
