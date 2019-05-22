@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.abb.Adapters.IntroScreenPageAdapter;
 import com.example.abb.Model.IntroItem;
@@ -28,6 +29,8 @@ public class IntoScreen extends AppCompatActivity {
 
     private TabLayout tabIndicator;
     private Button btnNext, btnGetStarted;
+    private TextView skipText;
+
     int screePostion = 0;
 
     private SharedPreferences screenPrefes;
@@ -91,8 +94,6 @@ public class IntoScreen extends AppCompatActivity {
         btnNext = findViewById(R.id.button_next);
         btnNext.setOnClickListener(nextButtonClickListener);
 
-        btnGetStarted = findViewById(R.id.get_started);
-
         // when another tab is selected
         tabIndicator.addOnTabSelectedListener(
                 new TabLayout.BaseOnTabSelectedListener() {
@@ -117,8 +118,13 @@ public class IntoScreen extends AppCompatActivity {
                 }
         );
 
+
         // Get started button click listener
+        btnGetStarted = findViewById(R.id.get_started);
         btnGetStarted.setOnClickListener(getStartedBtnClickListener);
+
+        skipText = findViewById(R.id.skip);
+        skipText.setOnClickListener(getStartedBtnClickListener);
     }
 
     private View.OnClickListener nextButtonClickListener
@@ -175,6 +181,7 @@ public class IntoScreen extends AppCompatActivity {
 
         tabIndicator.setVisibility(View.INVISIBLE);
         btnNext.setVisibility(View.INVISIBLE);
+        skipText.setVisibility(View.INVISIBLE);
         btnGetStarted.setVisibility(View.VISIBLE);
 
         // create animation for the getStarted button
@@ -185,6 +192,7 @@ public class IntoScreen extends AppCompatActivity {
 
     private void unloadLastScreen(){
         btnGetStarted.setVisibility(View.INVISIBLE);
+        skipText.setVisibility(View.VISIBLE);
         tabIndicator.setVisibility(View.VISIBLE);
         btnNext.setVisibility(View.VISIBLE);
     }
