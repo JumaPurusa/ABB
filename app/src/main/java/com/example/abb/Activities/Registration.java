@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +42,7 @@ public class Registration extends AppCompatActivity {
     private EditText fullnameEdit, usernameEdit, emailEdit, passwordEdit, confirmPassEdit;
     private Button registerBtn;
     private TextView signIn;
-    private LinearLayout registerLayout;
+    private CoordinatorLayout registerLayout;
 
     private SharedPreferences sharedPreferences;
 

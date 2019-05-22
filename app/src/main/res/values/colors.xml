@@ -47,8 +47,28 @@
 
     <color name="grey_trans">#c7c7c7</color>
 
+
+    <!-- Ali Suleiman -->
+    <color name="color_primary">#03A9F4</color>
+    <color name="color_primary_dark">#0288D1</color>
+    <color name="color_primary_light">#B3E5FC</color>
+    <color name="color_accent">#FF9800</color>
+    <color name="color_accent_light">#ffcc80</color>
+    <color name="color_primary_text">#212121</color>
+    <color name="color_secondary_text">#757575</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_white_alpha_8">#afff</color>
+    <color name="color_divider">#BDBDBD</color>
+    <color name="color_light_grey">#F5F5F5</color>
+    <color name="color_red_400">#ef5350</color>
+    <color name="color_red_600">#e53935</color>
     <color name="color_grey_200">#eeeeee</color>
-
-
-
+    <color name="color_grey_300">#e0e0e0</color>
+    <color name="color_grey_400">#bdbdbd</color>
+    <color name="color_grey_500">#9e9e9e</color>
+    <color name="color_grey_600">#757575</color>
+    <color name="color_grey_700">#455a64</color>
+    <color name="color_grey_800">#37474f</color>
+    <color name="color_grey_900">#263238</color>
+    <color name="color_light_green_700">#64dd17</color>
 </resources>

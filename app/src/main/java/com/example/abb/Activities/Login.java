@@ -3,6 +3,7 @@ package com.example.abb.Activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +40,7 @@ public class Login extends AppCompatActivity {
 
     private EditText emailEdit, passwordEdit;
     private Button loginBtn, registerBtn;
-    private RelativeLayout relativeLayout;
+    private CoordinatorLayout relativeLayout;
 
     private SharedPreferences sharedPreferences;
 

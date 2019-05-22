@@ -25,20 +25,10 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        //        WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //Window window = getWindow();
-
-        // clear FLAG_TRANSLUCENT_STATUS flag
-        //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-        //window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-        // finally change the color
-        //window.setStatusBarColor(Color.parseColor("#FFFFF6"));
 
         setContentView(R.layout.activity_welcome);
 
@@ -46,10 +36,10 @@ public class Welcome extends AppCompatActivity {
         final boolean isIntroScreenAlready = sharedPreferences.getBoolean("isIntroAvailable", false);
         //final String userDetails = sharedPreferences.getString("user", null);
 
-        iconImage = findViewById(R.id.icon);
+       // iconImage = findViewById(R.id.icon);
 
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.splash);
-        iconImage.startAnimation(animation);
+        //Animation animation = AnimationUtils.loadAnimation(this, R.anim.splash);
+        //iconImage.startAnimation(animation);
 
         runnable = new Runnable() {
             @Override
@@ -68,33 +58,6 @@ public class Welcome extends AppCompatActivity {
         handler = new Handler();
         handler.postDelayed(runnable, 2000);
 
-
-        /*
-        Thread timer = new Thread(){
-
-            @Override
-            public void run() {
-
-                try {
-                    sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally {
-
-                    if(isIntroScreenalready){
-                        startActivity(new Intent(Welcome.this, Login.class));
-                        finish();
-                    }else{
-
-                        startActivity(new Intent(Welcome.this, IntoScreen.class));
-                        finish();
-                    }
-                }
-            }
-        };
-
-        timer.start();
-        */
     }
 
     @Override
