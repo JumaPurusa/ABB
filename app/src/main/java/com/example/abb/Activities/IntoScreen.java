@@ -169,7 +169,7 @@ public class IntoScreen extends AppCompatActivity {
         SharedPreferences preferences = getApplicationContext().
                 getSharedPreferences("introPrefs", MODE_PRIVATE);
         return preferences.getBoolean("isIntroAvailable", false);
-    }
+    } 
 
     private void saveIntroData() {
         SharedPreferences.Editor prefs = screenPrefes.edit();
