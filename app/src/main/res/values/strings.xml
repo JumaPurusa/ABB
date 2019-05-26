@@ -22,4 +22,10 @@
     <string name="get_started">Get Started</string>
     <string name="skip">SKIP</string>
 
+
+    <!-- donor details Activity -->
+    <string name="full_name">Full name : %s</string>
+    <string name="phone_number">Phone number : %s</string>
+    <string name="email">Email : %s</string>
+
 </resources>

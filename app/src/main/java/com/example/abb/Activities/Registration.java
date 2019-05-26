@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -32,7 +33,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.abb.R;
 import com.example.abb.Utils.Constants;
+import com.example.abb.Utils.DatabaseMethods;
 import com.example.abb.Utils.MySingleton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +48,9 @@ public class Registration extends AppCompatActivity {
     private CoordinatorLayout registerLayout;
 
     private SharedPreferences sharedPreferences;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +84,9 @@ public class Registration extends AppCompatActivity {
                                 startActivity(loginIntent);
                                 finish();
                             }
-                            startActivity(new Intent(getApplicationContext(), Login.class));
-                            finish();
+                            //startActivity(new Intent(getApplicationContext(), Login.class));
+                            //finish();
+
 
                         }
                     }
@@ -91,124 +98,68 @@ public class Registration extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
-                        final String fullName = fullnameEdit.getText().toString();
-                        final String username = usernameEdit.getText().toString();
-                        final String email = emailEdit.getText().toString();
-                        final String password = passwordEdit.getText().toString();
-                        final String conf_password = confirmPassEdit.getText().toString();
 
-                        if(TextUtils.isEmpty(fullName) && TextUtils.isEmpty(username) && TextUtils.isEmpty(email) && TextUtils.isEmpty(password)
-                                && TextUtils.isEmpty(conf_password)){
-                            Snackbar.make(registerLayout, R.string.please_fill_all_the_field, Snackbar.LENGTH_SHORT).show();
-                        }else if(TextUtils.isEmpty(fullName)){
-                            Snackbar.make(registerLayout, R.string.please_fill_all_the_field, Snackbar.LENGTH_SHORT).show();
-                        }else if(TextUtils.isEmpty(username)){
-                            Snackbar.make(registerLayout, R.string.please_provide_your_username, Snackbar.LENGTH_SHORT).show();
-                        }else if(TextUtils.isEmpty(email)){
-                            Snackbar.make(registerLayout, R.string.please_provide_your_email, Snackbar.LENGTH_SHORT).show();
-                        }else if(TextUtils.isEmpty(password)){
-                            Snackbar.make(registerLayout, R.string.please_enter_password, Snackbar.LENGTH_SHORT).show();
-                        }else if(TextUtils.isEmpty(conf_password)){
-                            Snackbar.make(registerLayout, R.string.please_confirm_password, Snackbar.LENGTH_SHORT).show();
-                        }else if(Patterns.EMAIL_ADDRESS.matcher(email).matches() == false){
-                            Snackbar.make(registerLayout, R.string.invalid_email, Snackbar.LENGTH_SHORT).show();
-                        }else if(!conf_password.equals(password)){
-                            Snackbar.make(registerLayout, R.string.password_matches, Snackbar.LENGTH_SHORT).show();
-                        }else{
 
-                            final ProgressDialog progressDialog = new ProgressDialog(Registration.this);
-                            progressDialog.setMessage("Please wait...");
-                            progressDialog.setCancelable(false);
-                            progressDialog.show();
-
-                            StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.REGISTER_URL, new Response.Listener<String>( ) {
-                                @Override
-                                public void onResponse(String response) {
-                                    AlertDialog.Builder builder =
-                                            new AlertDialog.Builder(Registration.this);
-
-                                    if(response.contains("Email already exists")){
-                                        progressDialog.dismiss();
-                                        builder.setTitle(response + ", Please go to login");
-                                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener( ) {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent loginIntent = new Intent(Registration.this, Login.class);
-                                                startActivity(loginIntent);
-                                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                            }
-                                        });
-
-                                        builder.setNegativeButton("Cancel", null);
-                                        builder.create().show();
-                                    }else if(response.contains("Please verify your email")){
-                                        progressDialog.setMessage(response);
-                                        progressDialog.setCancelable(true);
-                                        ProgressDialog progressDialog2 = new ProgressDialog(Registration.this);
-                                        progressDialog2.setMessage(response);
-
-                                        // what's next
-
-                                    }
-
-                                    saveRegisterData();
-                                    Log.d("response: ", response);
-                                    //Toast.makeText(Registration.this, response, Toast.LENGTH_SHORT).show( );
+                        formProcessing(fullnameEdit.getText().toString(),
+                                usernameEdit.getText().toString(),
+                                emailEdit.getText().toString(),
+                                passwordEdit.getText().toString(),
+                                confirmPassEdit.getText().toString());
 
 
 
 
-
-                                }
-                            }, new Response.ErrorListener( ) {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    if(error instanceof TimeoutError){
-                                        Snackbar.make(registerLayout, "Timeout Error", Snackbar.LENGTH_SHORT).show();
-                                    }else if(error instanceof NoConnectionError){
-                                        Snackbar.make(registerLayout, "No Connection Error", Snackbar.LENGTH_SHORT).show();
-                                    }else if(error instanceof AuthFailureError){
-                                        Snackbar.make(registerLayout, "Authentication Failure Error", Snackbar.LENGTH_SHORT).show();
-                                    }else if(error instanceof NetworkError){
-                                        Snackbar.make(registerLayout, "Network Error", Snackbar.LENGTH_SHORT).show();
-                                    }else if(error instanceof ServerError){
-                                        Snackbar.make(registerLayout, "Server Error", Snackbar.LENGTH_SHORT).show();
-                                    }else if(error instanceof ParseError){
-                                        Snackbar.make(registerLayout, "JSON Parse Error", Snackbar.LENGTH_SHORT).show();
-                                    }
-
-                                    progressDialog.dismiss();
-                                }
-                            }){
-
-                                @Override
-                                protected Map<String, String> getParams() throws AuthFailureError {
-                                    Map<String, String> params = new HashMap<String, String>();
-                                    params.put(Constants.FULL_NAME, fullName);
-                                    params.put(Constants.USERNAME, username);
-                                    params.put(Constants.EMAIL, email);
-                                    params.put(Constants.PASSWORD, password);
-                                    return params;
-                                }
-
-                                @Override
-                                public Map<String, String> getHeaders() throws AuthFailureError {
-                                    Map<String, String> headers = new HashMap<String, String>();
-                                    headers.put("User-Agent", "fasthelpapp");
-                                    return headers;
-                                }
-                            };
-
-                            MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
                         }
 
 
                     }
-                }
         );
+
+        setupFirebaseAuth();
 
     }
 
+
+    private void formProcessing(String fullName, String username, String email, String password, String confirmPass){
+
+        if(TextUtils.isEmpty(fullName) && TextUtils.isEmpty(username) && TextUtils.isEmpty(email) && TextUtils.isEmpty(password)
+                && TextUtils.isEmpty(confirmPass)){
+            Snackbar.make(registerLayout, R.string.please_fill_all_the_field, Snackbar.LENGTH_SHORT).show();
+        }else if(TextUtils.isEmpty(fullName)){
+            Snackbar.make(registerLayout, R.string.please_fill_all_the_field, Snackbar.LENGTH_SHORT).show();
+
+        }else if(TextUtils.isEmpty(username)){
+            Snackbar.make(registerLayout, R.string.please_provide_your_username, Snackbar.LENGTH_SHORT).show();
+
+        }else if(TextUtils.isEmpty(email)){
+            Snackbar.make(registerLayout, R.string.please_provide_your_email, Snackbar.LENGTH_SHORT).show();
+
+        }else if(TextUtils.isEmpty(password)){
+            Snackbar.make(registerLayout, R.string.please_enter_password, Snackbar.LENGTH_SHORT).show();
+
+        }else if(TextUtils.isEmpty(confirmPass)){
+            Snackbar.make(registerLayout, R.string.please_confirm_password, Snackbar.LENGTH_SHORT).show();
+
+        }else if(Patterns.EMAIL_ADDRESS.matcher(email).matches() == false){
+            Snackbar.make(registerLayout, R.string.invalid_email, Snackbar.LENGTH_SHORT).show();
+
+        }else if(!confirmPass.equals(password)){
+            Snackbar.make(registerLayout, R.string.password_matches, Snackbar.LENGTH_SHORT).show();
+
+        }else {
+
+            final ProgressDialog progressDialog = new ProgressDialog(Registration.this);
+            progressDialog.setMessage("Please wait...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            DatabaseMethods databaseMethods = new DatabaseMethods(Registration.this);
+            databaseMethods.registerNewUserWithEmailAndPassword(fullName, username, email, password,
+                    progressDialog, registerLayout);
+
+        }
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -245,4 +196,33 @@ public class Registration extends AppCompatActivity {
         prefs.apply();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //if(mAuthListener != null)
+            //mAuth.removeAuthStateListener(mAuthListener);
+    }
+
+    private void setupFirebaseAuth(){
+
+        mAuth = FirebaseAuth.getInstance();
+
+        /*
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() != null){
+
+                }
+                    //mAuth.signOut();
+            }
+        };
+        */
+    }
 }

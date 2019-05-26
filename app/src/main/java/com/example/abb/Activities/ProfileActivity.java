@@ -4,40 +4,34 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.Window;
 
 import com.example.abb.R;
 
-public class ChatRoom extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_room);
+
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+        setContentView(R.layout.activity_profile);
 
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 
         ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-
-        actionBar.setTitle("Chat");
+        actionBar.setTitle("Profile");
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
-
-     }
+    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        supportFinishAfterTransition();
     }
 
     @Override

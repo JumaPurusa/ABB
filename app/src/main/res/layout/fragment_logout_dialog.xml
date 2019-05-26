@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="128dp"
+    android:padding="16dp"
+    android:background="@drawable/corned_rectangular">
+
+    <RelativeLayout
+        android:layout_marginBottom="20dp"
+        android:id="@+id/rellayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/abb_icon"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Are you sure you want to"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_marginTop="2dp"
+            android:id="@+id/text2"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@+id/text1"
+            android:layout_toRightOf="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="logout of abb?"
+            android:textSize="14sp"/>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+
+        android:layout_below="@+id/rellayout1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:textColor="@color/color_red_600"
+            android:gravity="center"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
+            android:layout_marginRight="5dp"
+            />
+
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:id="@+id/confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="CONFIRM"
+            android:textColor="@color/color_red_600"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

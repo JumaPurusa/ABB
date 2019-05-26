@@ -12,14 +12,16 @@
         android:roundIcon="@drawable/abb_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.IntroRegistration"></activity>
-        <activity android:name=".Activities.IntoScreen">
-
-        </activity>
+        <activity android:name=".Activities.DonorDetailsActivity"></activity>
+        <activity android:name=".Activities.DonorsActivity" />
+        <activity android:name=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.IntroRegistration" />
+        <activity android:name=".Activities.IntoScreen" />
         <activity android:name=".Activities.ChatRoom" />
         <activity android:name=".Activities.BecomeDonor" />
         <activity android:name=".Activities.Notifications" />
-        <activity android:name=".Activities.Welcome"
+        <activity
+            android:name=".Activities.Welcome"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

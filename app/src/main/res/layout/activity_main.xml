@@ -11,8 +11,7 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
@@ -21,7 +20,6 @@
             android:fitsSystemWindows="true"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:titleEnabled="true"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
@@ -69,7 +67,8 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:titleTextColor="@color/red"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:theme="@style/ToolbarStyle">
 
 
             </android.support.v7.widget.Toolbar>
@@ -125,7 +124,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
+                            android:textColor="@color/color_red_600"
                             android:layout_marginTop="10dp"
                             android:text="Request Blood" />
 
@@ -158,7 +157,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
+                            android:textColor="@color/color_red_600"
                             android:text="Become Donor"
                             />
 
@@ -200,7 +199,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
+                            android:textColor="@color/color_red_600"
                             android:layout_marginTop="10dp"
                             android:text="Chat Room"/>
 
@@ -233,7 +232,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
+                            android:textColor="@color/color_red_600"
                             android:text="Notifications"/>
 
                     </LinearLayout>

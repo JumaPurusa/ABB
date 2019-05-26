@@ -1,8 +1,9 @@
-package com.example.abb.Activities;
+ package com.example.abb.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -32,6 +34,11 @@ import com.example.abb.R;
 import com.example.abb.Utils.Constants;
 import com.example.abb.Utils.MySingleton;
 import com.example.abb.Utils.SaveSettings;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +50,9 @@ public class Login extends AppCompatActivity {
     private CoordinatorLayout relativeLayout;
 
     private SharedPreferences sharedPreferences;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +102,6 @@ public class Login extends AppCompatActivity {
                     Snackbar.make(relativeLayout, "Please enter the valid email", Snackbar.LENGTH_SHORT).show();
                 } else {
 
-
                     final ProgressDialog progressDialog = new ProgressDialog(Login.this);
                     progressDialog.setMessage("Please wait ...");
                     progressDialog.setCancelable(false);
@@ -105,6 +114,7 @@ public class Login extends AppCompatActivity {
                                 @Override
                                 public void onResponse(String response) {
 
+                                    hideKeyboard();
                                     if (response.contains("Please check your email to verify your account")) {
 
                                         progressDialog.dismiss();
@@ -113,22 +123,43 @@ public class Login extends AppCompatActivity {
 
                                         builder.setPositiveButton("Ok", null);
                                         builder.create().show();
+                                        mAuth.signOut();
 
                                     } else if (response.contains("Email or Password is not valid")) {
                                         progressDialog.dismiss();
                                         Toast.makeText(Login.this, response, Toast.LENGTH_SHORT).show();
+                                        mAuth.signOut();
                                     } else {
 
-                                        progressDialog.dismiss();
                                         //SaveSettings.userProfile(Login.this, response);
-                                        Intent mainIntent = new Intent(Login.this, MainActivity.class);
-                                        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(mainIntent);
+                                        //sendToMainActivity();
                                         //overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                                        // save the value if the user to sharedPreferences if the user is successfully logged in
-                                        savePrefsData();
-                                        finish();
+                                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
+                                                new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                                        if(task.isSuccessful()){
+
+                                                            sendToMainActivity();
+                                                            // save the value if the user to sharedPreferences if the user is successfully logged in
+                                                            savePrefsData();
+                                                            finish();
+
+                                                        }else{
+
+                                                            Snackbar.make(relativeLayout,
+                                                                    task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
+                                                        }
+
+                                                        progressDialog.dismiss();
+
+                                                    }
+                                                }
+                                        );
+
+
                                     }
 
                                     Log.d("response: ", response);
@@ -140,6 +171,7 @@ public class Login extends AppCompatActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
 
+                                    hideKeyboard();
 
                                     if (error instanceof TimeoutError) {
                                         Toast.makeText(Login.this, "Timeout Error", Toast.LENGTH_SHORT).show();
@@ -156,8 +188,10 @@ public class Login extends AppCompatActivity {
                                     }
 
                                     progressDialog.dismiss();
+                                    //mAuth.signOut();
                                 }
                             }
+
                     ) {
 
                         @Override
@@ -183,6 +217,8 @@ public class Login extends AppCompatActivity {
 
             }
         });
+
+        setupFirebaseAuth();
     }
 
     private boolean restoreLoginPrefs(){
@@ -203,5 +239,59 @@ public class Login extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finishAffinity();
+    }
+
+    private void setupFirebaseAuth(){
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+                // check if the user has logged in
+
+                if(currentUser != null){
+                        //sendToMainActivity();
+                        //savePrefsData();
+                        //finish();
+                }
+
+
+
+            }
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mAuthListener != null)
+            mAuth.removeAuthStateListener(mAuthListener);
+    }
+
+    private void sendToMainActivity(){
+        Intent mainIntent = new Intent(Login.this, MainActivity.class);
+        //mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mainIntent);
+    }
+
+    private void hideKeyboard(){
+
+        View view = getCurrentFocus();
+        ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+        emailEdit.setText(""); // clear email text
+        passwordEdit.setText(""); // clear password text
+        emailEdit.requestFocus();
+
     }
 }
