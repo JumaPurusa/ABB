@@ -5,6 +5,7 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
     android:padding="16dp"
-    android:textAppearance="?android:attr/textAppearanceMedium">
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:foreground="?android:attr/selectableItemBackground">
 
 </TextView>

@@ -1,6 +1,7 @@
 package com.example.abb.Activities;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -22,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.abb.Adapters.SpinnerViewAdapter;
+import com.example.abb.Interfaces.ItemClickListener;
 import com.example.abb.Model.Donor;
 import com.example.abb.R;
 import com.example.abb.Utils.Constants;
@@ -95,6 +97,18 @@ public class DonorsActivity extends AppCompatActivity {
 
         loadData(location);
 
+        donorsAdapter.setItemClickListener(
+                new ItemClickListener() {
+                    @Override
+                    public void itemClick(View view, int position) {
+                        Donor donor = donors.get(position);
+                        Intent detailIntent = new Intent(DonorsActivity.this, DonorDetailsActivity.class);
+                        detailIntent.putExtra("Donor", (Parcelable) donor);
+                        startActivity(detailIntent);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    }
+                }
+        );
     }
 
     @Override

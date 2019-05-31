@@ -5,7 +5,7 @@ public class Constants {
     public final static String BASE_URL = "https://abb-app.000webhostapp.com/";
     public final static String REGISTER_URL = BASE_URL + "register.php";
     public final static String LOGIN_URL = BASE_URL + "login.php";
-    public final static String REQUEST_BLOOD_URL = BASE_URL + "get_locations_data.php";
+    public final static String LOCATION_URL = BASE_URL + "get_locations_data.php";
     public final static String REQUEST_DONORS = BASE_URL + "get_donors.php/?";
 
     public final static String FIRE_ID = "firebase_user_id";

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.example.abb.Interfaces.ItemClickListener;
 import com.example.abb.Model.Donor;
 import com.example.abb.R;
 
@@ -18,6 +19,11 @@ public class SpinnerViewAdapter extends RecyclerView.Adapter<SpinnerViewAdapter.
 
     private List<Donor> donors;
     private Context mContext;
+    private ItemClickListener itemClickListener;
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
     public SpinnerViewAdapter(Context context, List<Donor> donors){
         this.mContext = context;
@@ -33,10 +39,20 @@ public class SpinnerViewAdapter extends RecyclerView.Adapter<SpinnerViewAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int position) {
 
         myViewHolder.textView.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fading_transition_animation));
         myViewHolder.textView.setText(donors.get(position).getName());
+
+        myViewHolder.itemView.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(itemClickListener != null)
+                            itemClickListener.itemClick(v, position);
+                    }
+                }
+        );
     }
 
     @Override

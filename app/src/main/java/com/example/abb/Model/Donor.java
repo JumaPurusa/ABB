@@ -1,6 +1,11 @@
 package com.example.abb.Model;
 
-public class Donor {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Donor implements Parcelable, Serializable{
     private String location_name;
     private String name;
     private String email;
@@ -19,6 +24,26 @@ public class Donor {
         this.phone_no = phone_no;
         this.blood_group = blood_group;
     }
+
+    protected Donor(Parcel in) {
+        location_name = in.readString();
+        name = in.readString();
+        email = in.readString();
+        phone_no = in.readString();
+        blood_group = in.readString();
+    }
+
+    public static final Creator<Donor> CREATOR = new Creator<Donor>() {
+        @Override
+        public Donor createFromParcel(Parcel in) {
+            return new Donor(in);
+        }
+
+        @Override
+        public Donor[] newArray(int size) {
+            return new Donor[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -58,5 +83,19 @@ public class Donor {
 
     public void setBlood_group(String blood_group) {
         this.blood_group = blood_group;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(location_name);
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(phone_no);
+        dest.writeString(blood_group);
     }
 }

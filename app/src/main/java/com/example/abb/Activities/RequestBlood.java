@@ -149,7 +149,7 @@ public class RequestBlood extends AppCompatActivity {
 
         Log.d(TAG, "loadData: It get called");
         StringRequest stringRequest = new StringRequest(
-                Constants.REQUEST_BLOOD_URL,
+                Constants.LOCATION_URL,
                 new Response.Listener<String>() {
                     @SuppressLint("RestrictedApi")
                     @Override
