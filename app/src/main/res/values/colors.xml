@@ -7,25 +7,10 @@
     <color name="textColor">#3D3C3C</color>
     <color name="textEditTint">#F76262</color>
 
-    <color name="colorAccent1">#FF4081</color>
-    <color name="colorBlue">#4F5486</color>
-    <color name="boldTextColor">#4a4b4a</color>
-    <color name="toolbar_color_control_normal">#fff</color>
-    <color name="grayColor">#c2c2d2</color>
-
-    <color name="colorPrimaryTransparent">#47e6392f</color>
-
-    <color name="yellow">#F6A623</color>
-
-    <color name="violet">#673AB7</color>
-    <color name="violet_trans_80">#BF673AB7</color>
 
 
-    <color name="orange">#F07B3F</color>
 
-    <color name="grey">#949494</color>
-    <color name="red">#FE3824</color>
-    <color name="red_logout">#E95354</color>
+
 
     <color name="white">#FFFFF6</color>
     <color name="white_transparent_80">#BFFFFFFF</color>
@@ -49,8 +34,8 @@
 
 
     <!-- Ali Suleiman -->
-    <color name="color_primary">#03A9F4</color>
-    <color name="color_primary_dark">#0288D1</color>
+    <color name="color_primary">#F54337</color>
+    <color name="color_primary_dark">#C3362C</color>
     <color name="color_primary_light">#B3E5FC</color>
     <color name="color_accent">#FF9800</color>
     <color name="color_accent_light">#ffcc80</color>

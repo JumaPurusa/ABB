@@ -70,8 +70,8 @@
 
             <Button
                 android:drawableRight="@drawable/ic_arrow_forward"
-                android:drawableTint="@color/red"
-                android:textColor="@color/red"
+                android:drawableTint="@color/color_red_600"
+                android:textColor="@color/color_red_600"
                 android:text="@string/next"
                 android:id="@+id/button_next"
                 android:layout_width="wrap_content"

@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.abb.Interfaces.ItemClickListener;
@@ -15,7 +17,7 @@ import com.example.abb.R;
 
 import java.util.List;
 
-public class SpinnerViewAdapter extends RecyclerView.Adapter<SpinnerViewAdapter.MyViewHolder>{
+public class DonorsAdapter extends RecyclerView.Adapter<DonorsAdapter.MyViewHolder>{
 
     private List<Donor> donors;
     private Context mContext;
@@ -25,7 +27,7 @@ public class SpinnerViewAdapter extends RecyclerView.Adapter<SpinnerViewAdapter.
         this.itemClickListener = itemClickListener;
     }
 
-    public SpinnerViewAdapter(Context context, List<Donor> donors){
+    public DonorsAdapter(Context context, List<Donor> donors){
         this.mContext = context;
         this.donors = donors;
     }
@@ -41,8 +43,9 @@ public class SpinnerViewAdapter extends RecyclerView.Adapter<SpinnerViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int position) {
 
-        myViewHolder.textView.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fading_transition_animation));
-        myViewHolder.textView.setText(donors.get(position).getName());
+        Donor donor = donors.get(position);
+        //myViewHolder.nameText.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fading_transition_animation));
+        myViewHolder.nameText.setText(donor.getName());
 
         myViewHolder.itemView.setOnClickListener(
                 new View.OnClickListener() {
@@ -62,12 +65,16 @@ public class SpinnerViewAdapter extends RecyclerView.Adapter<SpinnerViewAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView textView;
+        private TextView nameText;
+        private ImageView callIcon, smsIcon, emailIcon;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            textView = itemView.findViewById(R.id.textView);
+             nameText = itemView.findViewById(R.id.nameText);
+             callIcon = itemView.findViewById(R.id.callIcon);
+             smsIcon = itemView.findViewById(R.id.smsIcon);
+             emailIcon = itemView.findViewById(R.id.emailIcon);
         }
     }
 }

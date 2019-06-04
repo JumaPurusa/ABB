@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/request_blood_layout"
+    android:background="@android:color/white"
     tools:context=".Activities.RequestBlood">
 
     <include layout="@layout/app_bar"/>

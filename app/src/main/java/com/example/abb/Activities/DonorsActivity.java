@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.example.abb.Adapters.SpinnerViewAdapter;
+import com.example.abb.Adapters.DonorsAdapter;
 import com.example.abb.Interfaces.ItemClickListener;
 import com.example.abb.Model.Donor;
 import com.example.abb.R;
@@ -34,8 +34,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,7 @@ public class DonorsActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private CoordinatorLayout donorsLayout;
     private RecyclerView recyclerView;
-    private SpinnerViewAdapter donorsAdapter;
+    private DonorsAdapter donorsAdapter;
     private List<Donor> donors;
     private TextView noDonorsText;
 
@@ -86,13 +84,16 @@ public class DonorsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // add horizontal line divider for each list item
+
+        /*
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 this,
                 linearLayoutManager.getOrientation()
         );
         recyclerView.addItemDecoration(dividerItemDecoration);
+        */
 
-        donorsAdapter = new SpinnerViewAdapter(this, donors);
+        donorsAdapter = new DonorsAdapter(this, donors);
         recyclerView.setAdapter(donorsAdapter);
 
         loadData(location);
@@ -101,11 +102,35 @@ public class DonorsActivity extends AppCompatActivity {
                 new ItemClickListener() {
                     @Override
                     public void itemClick(View view, int position) {
+                        /*
                         Donor donor = donors.get(position);
                         Intent detailIntent = new Intent(DonorsActivity.this, DonorDetailsActivity.class);
                         detailIntent.putExtra("Donor", (Parcelable) donor);
                         startActivity(detailIntent);
                         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        */
+
+                        switch (view.getId()){
+                            case R.id.callIcon:
+                                Toast.makeText(DonorsActivity.this, "Call", Toast.LENGTH_SHORT).show();
+                                break;
+
+                            case R.id.smsIcon:
+                                Toast.makeText(DonorsActivity.this, "Sms", Toast.LENGTH_SHORT).show();
+                                break;
+
+                            case R.id.emailIcon:
+                                Toast.makeText(DonorsActivity.this, "Email", Toast.LENGTH_SHORT).show();
+                                break;
+
+                            default:
+                                Donor donor = donors.get(position);
+                                Intent detailIntent = new Intent(DonorsActivity.this, DonorDetailsActivity.class);
+                                detailIntent.putExtra("Donor", (Parcelable) donor);
+                                startActivity(detailIntent);
+                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                        }
                     }
                 }
         );

@@ -3,8 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:fontFamily">@font/open_sans</item>
         <item name="android:screenOrientation">portrait</item>
@@ -29,13 +29,13 @@
     </style>
 
     <style name="ToolbarStyle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:textColorPrimary">@color/color_red_600</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
 
     <style name="TitleTextAppearance" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/color_red_600</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:fontFamily">@font/open_sans_regular</item>
     </style>
 

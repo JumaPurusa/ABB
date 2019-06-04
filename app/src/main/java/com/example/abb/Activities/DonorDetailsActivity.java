@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +19,8 @@ public class DonorDetailsActivity extends AppCompatActivity {
     private final static String TAG = DonorDetailsActivity.class.getName();
     private Context mContext = DonorDetailsActivity.this;
 
-    private TextView fullname, phone, email;
+    private TextView nameText, phoneNumberText, emailText, bloodGroupText;
+    FrameLayout callLayout, smsLayout, emailLayout;
 
     Donor donor = null;
 
@@ -38,18 +40,14 @@ public class DonorDetailsActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
         ActionBar actionBar = getSupportActionBar();
         assert  actionBar != null;
-        actionBar.setTitle(donor.getName());
+        actionBar.setTitle("Donor");
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
-        fullname = findViewById(R.id.full_name);
-        phone = findViewById(R.id.phone_no);
-        email = findViewById(R.id.email);
 
-        fullname.setText(getString(R.string.full_name, donor.getName()));
-        phone.setText(getString(R.string.phone_number, donor.getPhone_no()));
-        email.setText(getString(R.string.email, donor.getEmail()));
+
+
 
 
     }
