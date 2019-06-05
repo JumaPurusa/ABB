@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">ABB</string>
 
-    <string name="please_fill_all_the_field">Please fill all the field</string>
+    <string name="please_fill_all_the_field">Please fill all the required field</string>
     <string name="password_matches">Passwords do not matches</string>
-    <string name="please_provide_your_firstname">Please provide your Full Name</string>
+    <string name="please_provide_your_firstname">Please provide your First Name</string>
+    <string name="please_provide_your_lastname">Please provide your Last Name</string>
     <string name="please_provide_your_username">Please provide your username</string>
     <string name="please_provide_your_email">Please provide your email</string>
     <string name="please_enter_password">Please enter password</string>

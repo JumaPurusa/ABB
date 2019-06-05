@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -51,8 +53,6 @@ public class Login extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,15 @@ public class Login extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_login);
+
+        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+
+        actionBar.setTitle("Login");
+        actionBar.setHomeButtonEnabled(true);
+        //actionBar.setDisplayHomeAsUpEnabled(true);
+        //actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
 
         relativeLayout = findViewById(R.id.login_layout);
         emailEdit = findViewById(R.id.email);
@@ -123,41 +132,23 @@ public class Login extends AppCompatActivity {
 
                                         builder.setPositiveButton("Ok", null);
                                         builder.create().show();
-                                        mAuth.signOut();
+
 
                                     } else if (response.contains("Email or Password is not valid")) {
                                         progressDialog.dismiss();
                                         Toast.makeText(Login.this, response, Toast.LENGTH_SHORT).show();
-                                        mAuth.signOut();
+
                                     } else {
 
                                         //SaveSettings.userProfile(Login.this, response);
                                         //sendToMainActivity();
                                         //overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
-                                                new OnCompleteListener<AuthResult>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                                                        if(task.isSuccessful()){
-
                                                             sendToMainActivity();
                                                             // save the value if the user to sharedPreferences if the user is successfully logged in
                                                             savePrefsData();
                                                             finish();
 
-                                                        }else{
-
-                                                            Snackbar.make(relativeLayout,
-                                                                    task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
-                                                        }
-
-                                                        progressDialog.dismiss();
-
-                                                    }
-                                                }
-                                        );
 
 
                                     }
@@ -218,7 +209,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        setupFirebaseAuth();
+
     }
 
     private boolean restoreLoginPrefs(){
@@ -241,40 +232,17 @@ public class Login extends AppCompatActivity {
         finishAffinity();
     }
 
-    private void setupFirebaseAuth(){
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-                // check if the user has logged in
-
-                if(currentUser != null){
-                        //sendToMainActivity();
-                        //savePrefsData();
-                        //finish();
-                }
-
-
-
-            }
-        };
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        //mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(mAuthListener != null)
-            mAuth.removeAuthStateListener(mAuthListener);
+        //if(mAuthListener != null)
+            //mAuth.removeAuthStateListener(mAuthListener);
     }
 
     private void sendToMainActivity(){

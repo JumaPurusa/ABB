@@ -8,15 +8,17 @@
     android:id="@+id/login_layout"
     tools:context=".Activities.Welcome">
 
+    <include layout="@layout/app_bar"/>
     <LinearLayout
         android:id="@+id/toplayout"
         android:layout_width="256dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:layout_gravity="center"
         android:gravity="center_horizontal">
 
+        <!--
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,7 +26,7 @@
             android:textColor="@color/color_red_600"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"/>-->
 
         <ImageView
             android:layout_width="96dp"
@@ -90,7 +92,7 @@
             android:textColor="@android:color/white"
             android:textAllCaps="false"
             android:textSize="14sp"
-            android:background="@color/color_red_600"/>
+            android:background="@color/color_primary"/>
 
         <TextView
             android:layout_marginTop="16dp"
@@ -114,7 +116,7 @@
             android:textColor="@android:color/white"
             android:textSize="14sp"
             android:background="@color/color_grey_900"
-            android:layout_marginBottom="64dp"/>
+            android:layout_marginBottom="80dp"/>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

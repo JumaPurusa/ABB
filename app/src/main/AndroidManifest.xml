@@ -15,7 +15,6 @@
         <activity android:name=".Activities.DonorDetailsActivity"></activity>
         <activity android:name=".Activities.DonorsActivity" />
         <activity android:name=".Activities.ProfileActivity" />
-        <activity android:name=".Activities.IntroRegistration" />
         <activity android:name=".Activities.IntoScreen" />
         <activity android:name=".Activities.ChatRoom" />
         <activity android:name=".Activities.BecomeDonor" />

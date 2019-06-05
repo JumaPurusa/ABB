@@ -90,92 +90,9 @@ public class DatabaseMethods {
     public void addNewUserToDatabase(final String firebase_user_id, final String fullName, final String username, final String email, final String password
     , final ProgressDialog progressDialog, final CoordinatorLayout layout){
         Log.d(TAG, "addNewUserToDatabase: Adding New User");
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.REGISTER_URL, new Response.Listener<String>( ) {
-            @Override
-            public void onResponse(String response) {
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(mContext);
-
-                if(response.contains("Email already exists")){
-                    progressDialog.dismiss();
-                    builder.setTitle(response + ", Please go to login");
-                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener( ) {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent loginIntent = new Intent(mContext, Login.class);
-                            mContext.startActivity(loginIntent);
-                            ((AppCompatActivity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        }
-                    });
-
-                    builder.setNegativeButton("Cancel", null);
-                    builder.create().show();
-                }else if(response.contains("Please verify your email")){
-                    progressDialog.dismiss();
-                    //progressDialog.setMessage(response);
-                    //progressDialog.setCancelable(true);
-                    //ProgressDialog progressDialog2 = new ProgressDialog(mContext);
-                   // progressDialog2.setMessage(response);
-                    LoadingDialog.messageDialog((Activity) mContext, response, true);
-                    // what's next
-
-                }
-
-                //saveRegisterData();
-                Log.d("response: ", response);
-                //Toast.makeText(Registration.this, response, Toast.LENGTH_SHORT).show( );
-
-
-
-
-
-            }
-        }, new Response.ErrorListener( ) {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if(error instanceof TimeoutError){
-                    showSnackMessage("TimeOut Error", layout);
-                }else if(error instanceof NoConnectionError){
-                    showSnackMessage("No Connection Error", layout);
-                }else if(error instanceof AuthFailureError){
-                    showSnackMessage("Authentication Failure Error", layout);
-                }else if(error instanceof NetworkError){
-                    showSnackMessage("Network Error", layout);
-                }else if(error instanceof ServerError){
-                    showSnackMessage("Server Error", layout);
-                }else if(error instanceof ParseError){
-                    showSnackMessage("JSON Parse Error", layout);
-                }
-
-                progressDialog.dismiss();
-            }
-        }){
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put(Constants.FIRE_ID, firebase_user_id);
-                params.put(Constants.FULL_NAME, fullName);
-                params.put(Constants.USERNAME, username);
-                params.put(Constants.EMAIL, email);
-                params.put(Constants.PASSWORD, password);
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
-                headers.put("User-Agent", "fasthelpapp");
-                return headers;
-            }
-        };
-
-        MySingleton.getInstance(mContext).addToRequestQueue(stringRequest);
 
 
     }
 
-    private void showSnackMessage(String message, CoordinatorLayout layout){
-        Snackbar.make(layout, message, 2000).show();
-    }
+
 }
