@@ -53,7 +53,7 @@ public class IntoScreen extends AppCompatActivity {
 
         setContentView(R.layout.activity_intro_screen);
 
-        screenPrefes = getApplicationContext().getSharedPreferences("introPrefs", MODE_PRIVATE);
+        screenPrefes = getApplicationContext().getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 
         introScreenViewPager = findViewById(R.id.intro_scree_view_pager);
 
@@ -167,7 +167,7 @@ public class IntoScreen extends AppCompatActivity {
 
     private boolean isIntroAvailable(){
         SharedPreferences preferences = getApplicationContext().
-                getSharedPreferences("introPrefs", MODE_PRIVATE);
+                getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
         return preferences.getBoolean("isIntroAvailable", false);
     }
 

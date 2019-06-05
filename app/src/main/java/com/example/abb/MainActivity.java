@@ -52,19 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView[] dots;
     private LinearLayout sliderDotPanel;
 
-    // firebase object
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(!isUserLogin()){
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getApplicationContext(), Login.class));
-            finish();
-        }
 
         setContentView(R.layout.activity_main);
 
@@ -185,14 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        setupFirebaseAuth();
-    }
 
-    private boolean isUserLogin(){
-        SharedPreferences preferences = getApplicationContext()
-                .getSharedPreferences("introPrefs", MODE_PRIVATE);
-
-        return preferences.getBoolean("isLoggedIn", false);
     }
 
     public class MyTimerTask extends TimerTask {
@@ -264,33 +247,17 @@ public class MainActivity extends AppCompatActivity {
     /**
      * setup Firebase Authentication
      */
-    private void setupFirebaseAuth(){
 
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                if(firebaseAuth.getCurrentUser() != null){
-
-                }else{
-                    Log.d(TAG, "onAuthStateChanged: sign out");
-                }
-            }
-        };
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(mAuthListener != null)
-            mAuth.removeAuthStateListener(mAuthListener);
+
     }
 }

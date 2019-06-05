@@ -36,16 +36,19 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.abb.Dialogs.LoadingDialog;
+import com.example.abb.Model.User;
 import com.example.abb.R;
 import com.example.abb.Utils.Constants;
 import com.example.abb.Utils.DatabaseMethods;
 import com.example.abb.Utils.DialogDisplay;
+import com.example.abb.Utils.JSONParser;
 import com.example.abb.Utils.MySingleton;
 import com.example.abb.Utils.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,8 +59,10 @@ import java.util.Map;
 
 public class Registration extends AppCompatActivity {
 
+    private static final String TAG = Registration.class.getName();
+
     private EditText firstNameEdit, lastNameEdit, usernameEdit, emailEdit, passwordEdit, confirmPassEdit;
-    private Button registerBtn, buttonNext;
+    private Button registerBtn;
     private CoordinatorLayout registerLayout;
     private LinearLayout contentLayout;
     private AlertDialog progressDialog;
@@ -72,7 +77,7 @@ public class Registration extends AppCompatActivity {
 
         setContentView(R.layout.activity_registration);
 
-        sharedPreferences = getApplicationContext().getSharedPreferences("introPrefs", MODE_PRIVATE);
+        sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
         ActionBar actionBar = getSupportActionBar();
@@ -90,10 +95,10 @@ public class Registration extends AppCompatActivity {
         emailEdit = findViewById(R.id.email_phone);
         passwordEdit = findViewById(R.id.passwordEditText);
         confirmPassEdit = findViewById(R.id.confirm_passwordEditText);
-        buttonNext = findViewById(R.id.button_next);
+
         contentLayout = findViewById(R.id.contentLayout);
 
-        buttonNext.setVisibility(View.INVISIBLE);
+
 
         registerBtn = findViewById(R.id.sign_up);
 
@@ -141,7 +146,7 @@ public class Registration extends AppCompatActivity {
                                 onStartRegister();
                             else
                                 Snackbar.make(registerLayout,
-                                        "Your Device is Offline",
+                                        "No Connection",
                                         2000);
 
 
@@ -151,29 +156,10 @@ public class Registration extends AppCompatActivity {
                     }
         );
 
-        buttonNext.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                        if(NetworkUtils.isConnected(Registration.this))
-                            onGoToNextScreen();
-                        else
-                            showSnackMessage("Connection Failed", registerLayout);
-                    }
-                }
-        );
 
     }
 
-
-    private void onGoToNextScreen(){
-
-        String email = sharedPreferences.getString("email", null);
-        String password = sharedPreferences.getString("password", null);
-
-        onLoginTask(email, password);
-    }
 
     private void onStartRegister(){
 
@@ -273,8 +259,8 @@ public class Registration extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                buttonNext.setVisibility(View.VISIBLE);
-                //contentLayout.setVisibility(View.INVISIBLE);
+                 startActivity(new Intent(Registration.this, NextToUploadActivity.class));
+                 finish();
             }
         });
 
@@ -309,43 +295,19 @@ public class Registration extends AppCompatActivity {
                 }
 
                 if(response == null || response == "<br>" || response == "<!DOCTYPE"){
-                    //progressDialog.dismiss();
-                    //builder.setTitle(response + ", Please go to login");
-                    //builder.setPositiveButton("Ok", new DialogInterface.OnClickListener( ) {
-                        //@Override
-                        //public void onClick(DialogInterface dialog, int which) {
-                           // Intent loginIntent = new Intent(mContext, Login.class);
-                            //.startActivity(loginIntent);
-                            //((AppCompatActivity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        //}
-                    //});
-
-                    //builder.setNegativeButton("Cancel", null);
-                    //builder.create().show();
                     onErrorOccurred();
                 }else if(success == 0){
-                    //progressDialog.dismiss();
-                    //progressDialog.setMessage(response);
-                    //progressDialog.setCancelable(true);
-                    //ProgressDialog progressDialog2 = new ProgressDialog(mContext);
-                    // progressDialog2.setMessage(response);
-                    //LoadingDialog.messageDialog((Activity) mContext, response, true);
-                    // what's next
 
                     onAuthenticationFailure(message);
 
-                }else{
+                }else {
 
-                    if(success == 1){
+                    if (success == 1) {
 
                         onSuccessRegister(message);
                     }
 
                 }
-
-                //saveRegisterData();
-                //Log.d("response: ", response);
-                //Toast.makeText(Registration.this, response, Toast.LENGTH_SHORT).show( );
 
             }
         }, new Response.ErrorListener( ) {
@@ -422,93 +384,12 @@ public class Registration extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //mAuth.addAuthStateListener(mAuthListener);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //if(mAuthListener != null)
-            //mAuth.removeAuthStateListener(mAuthListener);
-    }
-
-    private void onLoginTask(final String email, final String password){
-
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                Constants.LOGIN_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        //hideKeyboard();
-                        if (response.contains("Please check your email to verify your account")) {
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Registration.this);
-                            builder.setMessage(response);
-
-                            builder.setPositiveButton("Ok", null);
-                            builder.create().show();
-
-
-                        } else if (response.contains("Email or Password is not valid")) {
-                            Toast.makeText(Registration.this, response, Toast.LENGTH_SHORT).show();
-                        } else {
-
-                            startActivity(new Intent(Registration.this, ImageUpload.class));
-                            finish();
-
-                        }
-
-                        Log.d("response: ", response);
-                        //Toast.makeText(Login.this, response, Toast.LENGTH_SHORT).show( );
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-
-
-                        if (error instanceof TimeoutError) {
-                            Toast.makeText(Registration.this, "Timeout Error", Toast.LENGTH_SHORT).show();
-                        } else if (error instanceof NoConnectionError) {
-                            Toast.makeText(Registration.this, "No Connection Error", Toast.LENGTH_SHORT).show();
-                        } else if (error instanceof AuthFailureError) {
-                            Toast.makeText(Registration.this, "Authentication Failure Error", Toast.LENGTH_SHORT).show();
-                        } else if (error instanceof NetworkError) {
-                            Toast.makeText(Registration.this, "Network Error", Toast.LENGTH_SHORT).show();
-                        } else if (error instanceof ServerError) {
-                            Toast.makeText(Registration.this, "Server Error", Toast.LENGTH_SHORT).show();
-                        } else if (error instanceof ParseError) {
-                            Toast.makeText(Registration.this, "JSON Parse Error", Toast.LENGTH_SHORT).show();
-                        }
-
-                        progressDialog.dismiss();
-                        //mAuth.signOut();
-                    }
-                }
-
-        ) {
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put(Constants.EMAIL, email);
-                params.put(Constants.PASSWORD, password);
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
-                headers.put("User-Agent", "abb");
-                return headers;
-            }
-        };
-
-        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
 
     }
 

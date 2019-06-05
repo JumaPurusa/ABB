@@ -27,9 +27,7 @@ public class LogoutDialog extends DialogFragment {
     private final  static String TAG = LogoutDialog.class.getName();
     private Context mContext;
 
-    // firebase
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+
 
     public LogoutDialog(){
 
@@ -48,7 +46,6 @@ public class LogoutDialog extends DialogFragment {
         getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogScale;
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        setupFirebaseAuth();
 
         return view;
     }
@@ -92,10 +89,10 @@ public class LogoutDialog extends DialogFragment {
             @Override
             public void run() {
 
-                mAuth.signOut();
-                SharedPreferences preferences = mContext.getSharedPreferences("introPrefs", mContext.MODE_PRIVATE);
+                SharedPreferences preferences = mContext.getSharedPreferences(mContext.getString(R.string.app_name),
+                        mContext.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("isLoggedIn", false);
+                editor.putString("profile", null);
                 editor.apply();
 
                 Activity activity = (Activity)mContext;
@@ -112,28 +109,12 @@ public class LogoutDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if(mAuthListener != null)
-            mAuth.removeAuthStateListener(mAuthListener);
-    }
 
-    private void setupFirebaseAuth(){
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                if(firebaseAuth.getCurrentUser() == null){
-
-                }
-            }
-        };
     }
 
 }

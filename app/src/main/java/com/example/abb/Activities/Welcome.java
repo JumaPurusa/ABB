@@ -32,8 +32,9 @@ public class Welcome extends AppCompatActivity {
 
         setContentView(R.layout.activity_welcome);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("introPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
         final boolean isIntroScreenAlready = sharedPreferences.getBoolean("isIntroAvailable", false);
+        final String userProfile = sharedPreferences.getString("profile", null);
         //final String userDetails = sharedPreferences.getString("user", null);
 
        // iconImage = findViewById(R.id.icon);
@@ -46,12 +47,21 @@ public class Welcome extends AppCompatActivity {
             public void run() {
 
                 if(isIntroScreenAlready){
-                    startActivity(new Intent(Welcome.this, Login.class));
+
+                    // check if there is profile
+                    if(userProfile != null)
+                        startActivity(new Intent(Welcome.this, MainActivity.class));
+                    else
+                     startActivity(new Intent(Welcome.this, Login.class));
+
                     finish();
+
                 }else{
                     startActivity(new Intent(Welcome.this, IntoScreen.class));
                     finish();
                 }
+
+
             }
         };
 

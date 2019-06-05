@@ -32,38 +32,45 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.abb.MainActivity;
+import com.example.abb.Model.User;
 import com.example.abb.R;
 import com.example.abb.Utils.Constants;
+import com.example.abb.Utils.DialogDisplay;
+import com.example.abb.Utils.JSONParser;
 import com.example.abb.Utils.MySingleton;
+import com.example.abb.Utils.NetworkUtils;
 import com.example.abb.Utils.SaveSettings;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
-    private EditText emailEdit, passwordEdit;
-    private Button loginBtn, registerBtn;
-    private CoordinatorLayout relativeLayout;
+    private static final String TAG = Login.class.getName();;
 
+    private EditText emailEdit, passwordEdit;
+    private CoordinatorLayout relativeLayout;
     private SharedPreferences sharedPreferences;
+
+    private AlertDialog progressDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        /*
         if(restoreLoginPrefs()){
             Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(mainIntent);
             finish();
-        }
+        }*/
 
         setContentView(R.layout.activity_login);
 
@@ -79,10 +86,10 @@ public class Login extends AppCompatActivity {
         relativeLayout = findViewById(R.id.login_layout);
         emailEdit = findViewById(R.id.email);
         passwordEdit = findViewById(R.id.password_text);
-        loginBtn = findViewById(R.id.loginBtn);
 
-        registerBtn = findViewById(R.id.regBtn);
-        registerBtn.setOnClickListener(new View.OnClickListener( ) {
+
+
+        findViewById(R.id.regBtn).setOnClickListener(new View.OnClickListener( ) {
             @Override
             public void onClick(View v) {
                 Intent registerIntent = new Intent(Login.this, Registration.class);
@@ -92,138 +99,174 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        sharedPreferences = getSharedPreferences("introPrefs", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
 
-        loginBtn.setOnClickListener(new View.OnClickListener( ) {
+        progressDialog = DialogDisplay.progressDialogWaiting(
+                Login.this,
+                "Please Wait...",
+                false
+        );
+
+
+        findViewById(R.id.loginBtn).setOnClickListener(new View.OnClickListener( ) {
             @Override
             public void onClick(View v) {
+                // hide the keyboard
+                hideKeyboard();
 
-                final String email = emailEdit.getText().toString();
-                final String password = passwordEdit.getText().toString();
-
-                if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
-                    Snackbar.make(relativeLayout, "Please provide both your email and password", Snackbar.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(email)) {
-                    Snackbar.make(relativeLayout, R.string.please_provide_your_email, Snackbar.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(password)) {
-                    Snackbar.make(relativeLayout, R.string.please_enter_password, Snackbar.LENGTH_SHORT).show();
-                } else if (Patterns.EMAIL_ADDRESS.matcher(email).matches() == false) {
-                    Snackbar.make(relativeLayout, "Please enter the valid email", Snackbar.LENGTH_SHORT).show();
-                } else {
-
-                    final ProgressDialog progressDialog = new ProgressDialog(Login.this);
-                    progressDialog.setMessage("Please wait ...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-
-                    StringRequest stringRequest = new StringRequest(
-                            Request.Method.POST,
-                            Constants.LOGIN_URL,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-
-                                    hideKeyboard();
-                                    if (response.contains("Please check your email to verify your account")) {
-
-                                        progressDialog.dismiss();
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-                                        builder.setMessage(response + " Then Login again");
-
-                                        builder.setPositiveButton("Ok", null);
-                                        builder.create().show();
-
-
-                                    } else if (response.contains("Email or Password is not valid")) {
-                                        progressDialog.dismiss();
-                                        Toast.makeText(Login.this, response, Toast.LENGTH_SHORT).show();
-
-                                    } else {
-
-                                        //SaveSettings.userProfile(Login.this, response);
-                                        //sendToMainActivity();
-                                        //overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-                                                            sendToMainActivity();
-                                                            // save the value if the user to sharedPreferences if the user is successfully logged in
-                                                            savePrefsData();
-                                                            finish();
-
-
-
-                                    }
-
-                                    Log.d("response: ", response);
-                                    //Toast.makeText(Login.this, response, Toast.LENGTH_SHORT).show( );
-
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-
-                                    hideKeyboard();
-
-                                    if (error instanceof TimeoutError) {
-                                        Toast.makeText(Login.this, "Timeout Error", Toast.LENGTH_SHORT).show();
-                                    } else if (error instanceof NoConnectionError) {
-                                        Toast.makeText(Login.this, "No Connection Error", Toast.LENGTH_SHORT).show();
-                                    } else if (error instanceof AuthFailureError) {
-                                        Toast.makeText(Login.this, "Authentication Failure Error", Toast.LENGTH_SHORT).show();
-                                    } else if (error instanceof NetworkError) {
-                                        Toast.makeText(Login.this, "Network Error", Toast.LENGTH_SHORT).show();
-                                    } else if (error instanceof ServerError) {
-                                        Toast.makeText(Login.this, "Server Error", Toast.LENGTH_SHORT).show();
-                                    } else if (error instanceof ParseError) {
-                                        Toast.makeText(Login.this, "JSON Parse Error", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    progressDialog.dismiss();
-                                    //mAuth.signOut();
-                                }
-                            }
-
-                    ) {
-
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put(Constants.EMAIL, email);
-                            params.put(Constants.PASSWORD, password);
-                            return params;
-                        }
-
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> headers = new HashMap<String, String>();
-                            headers.put("User-Agent", "abb");
-                            return headers;
-                        }
-                    };
-
-                    MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
-
-
-                }
-
+                if(isFormValid())
+                    // check if there in network connection
+                    if(NetworkUtils.isConnected(Login.this))
+                        onStartLogin();
+                    else
+                        Snackbar.make(relativeLayout,
+                                "No Connection",
+                                2000);
             }
         });
 
+    }
+
+    private void onStartLogin(){
+
+        if(!progressDialog.isShowing())
+            progressDialog.show();
+
+
+
+        loginTask(emailEdit.getText().toString(),
+                passwordEdit.getText().toString());
+    }
+
+    private boolean isFormValid(){
+
+        if (TextUtils.isEmpty(emailEdit.getText().toString()) && TextUtils.isEmpty(passwordEdit.getText().toString())) {
+            Snackbar.make(relativeLayout, "Please provide both your email and password", Snackbar.LENGTH_SHORT).show();
+            return false;
+        } else if (TextUtils.isEmpty(emailEdit.getText().toString())) {
+            Snackbar.make(relativeLayout, R.string.please_provide_your_email, Snackbar.LENGTH_SHORT).show();
+            return false;
+        } else if (TextUtils.isEmpty(passwordEdit.getText().toString())) {
+            Snackbar.make(relativeLayout, R.string.please_enter_password, Snackbar.LENGTH_SHORT).show();
+            return false;
+        } else if (Patterns.EMAIL_ADDRESS.matcher(emailEdit.getText().toString()).matches() == false) {
+            Snackbar.make(relativeLayout, "Please enter the valid email", Snackbar.LENGTH_SHORT).show();
+            return false;
+        }else
+            return true;
+
 
     }
 
-    private boolean restoreLoginPrefs(){
+    private void onErrorOccurred(){
 
-        SharedPreferences preferences = getApplicationContext()
-                .getSharedPreferences("introPrefs", MODE_PRIVATE);
+        emailEdit.setText("");
+        passwordEdit.setText("");
 
-        return preferences.getBoolean("isLoggedIn", false);
+        Snackbar.make(relativeLayout,
+                "Error Occured. Please try again",
+                5000);
     }
 
-    private void savePrefsData(){
-        SharedPreferences.Editor prefs = sharedPreferences.edit();
-        prefs.putBoolean("isLoggedIn", true);
-        prefs.apply();
+    private void onSuccessLogin(String response){
+
+        Log.d(TAG, "onSuccessLogin: response: " + response);
+
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        prefsEditor.putString("profile", response);
+        prefsEditor.apply();
+
+        sendToMainActivity();
+
+    }
+
+    private void loginTask(final String email, final String password){
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.POST,
+                Constants.LOGIN_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        hideKeyboard();
+                        if (response.contains("Please check your email to verify your account")) {
+
+                            passwordEdit.setText("");
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                            builder.setMessage(response + " Then Login again");
+
+                            builder.setPositiveButton("Ok", null);
+                            builder.create().show();
+
+
+                        } else if (response.contains("Email or Password is not valid")) {
+
+                            emailEdit.setText("");
+                            passwordEdit.setText("");
+                            Snackbar.make(relativeLayout,
+                                    response,
+                                    5000);
+
+                        }else if(response == null || response.contains("<br>") || response.contains("<!DOCTYPE")){
+
+                            onErrorOccurred();
+
+                        }else{
+
+                            User user = JSONParser.parseUser(response);
+
+                            if(user != null){
+                                user.setEmail(emailEdit.getText().toString());
+                                onSuccessLogin(new Gson().toJson(user));
+                            }
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        hideKeyboard();
+
+                        if (error instanceof TimeoutError) {
+                            Toast.makeText(Login.this, "Timeout Error", Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof NoConnectionError) {
+                            Toast.makeText(Login.this, "No Connection Error", Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof AuthFailureError) {
+                            Toast.makeText(Login.this, "Authentication Failure Error", Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof NetworkError) {
+                            Toast.makeText(Login.this, "Network Error", Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ServerError) {
+                            Toast.makeText(Login.this, "Server Error", Toast.LENGTH_SHORT).show();
+                        } else if (error instanceof ParseError) {
+                            Toast.makeText(Login.this, "JSON Parse Error", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }
+
+        ) {
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put(Constants.EMAIL, email);
+                params.put(Constants.PASSWORD, password);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("User-Agent", "abb");
+                return headers;
+            }
+        };
+
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 
     @Override
@@ -235,20 +278,18 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //if(mAuthListener != null)
-            //mAuth.removeAuthStateListener(mAuthListener);
     }
 
     private void sendToMainActivity(){
         Intent mainIntent = new Intent(Login.this, MainActivity.class);
         //mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(mainIntent);
+        finish();
     }
 
     private void hideKeyboard(){
@@ -257,9 +298,9 @@ public class Login extends AppCompatActivity {
         ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE))
                 .hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-        emailEdit.setText(""); // clear email text
-        passwordEdit.setText(""); // clear password text
-        emailEdit.requestFocus();
+        //emailEdit.setText(""); // clear email text
+        //passwordEdit.setText(""); // clear password text
+        //emailEdit.requestFocus();
 
     }
 }
