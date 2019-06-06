@@ -16,10 +16,17 @@
     <string name="request_blood">Request Blood</string>
     <string name="become_donor">Become Donor</string>
     <string name="chart_room">Chart Room</string>
-    <string name="intro_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        Ut enim ad minim veniam.
+    <string name="intro_description_request_blood">
+        Click on Request Blood icon, from there you can select any donor on the list of available donors.
     </string>
+    <string name="intro_description_become_donor">
+        Click Become Donor icon, based on your location you will be given details of the available Hospitals to donate blood.
+    </string>
+
+    <string name="intro_description_chat">
+       Click on chat room icon, So that you can present your thoughts/ideas about blood request or donation and ask for help on the matter.
+    </string>
+
     <string name="get_started">Get Started</string>
     <string name="skip">SKIP</string>
 
@@ -35,4 +42,12 @@
     <!-- finishing signup process -->
     <string name="finishing_signup_text">Please check your email to verify. After Verifying your email. Please click next to setup your profile</string>
 
+    <!-- Become a donor -->
+    <string name="search_query">Enter your location to see available hospitals</string>
+    <string name="hospital_information">Please visit \"%s\" hospital to donate blood in working time of 08am - 04pm everyday in weekdays</string>
+    <string name="for_more_information">For More information</string>
+    <string name="phone_details">Phone \: %s</string>
+    <string name="thank_you">Thanks in advance</string>
+    <string name="save_life">\"Give Blood Save Life\"</string>
+    <string name="contact_dialog_string">You are about to call \"%s\ hospital" via phone number \"%s\"</string>
 </resources>

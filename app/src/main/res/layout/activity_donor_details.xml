@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:id="@+id/coordinatorLayout"
     tools:context=".Activities.DonorDetailsActivity">
 
 
@@ -18,68 +19,82 @@
 
         <include layout="@layout/app_bar"/>
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingTop="24dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="16dp">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="76dp"
-                android:layout_height="76dp"
-                android:src="@drawable/default_profile_image"
-                app:civ_border_color="@color/color_grey_400"
-                app:civ_border_width="1dp"
-                android:layout_gravity="center_vertical"/>
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginRight="16dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="4dp"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_gravity="center_vertical"
-                android:orientation="vertical">
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="16dp"
+                android:foreground="?android:attr/selectableItemBackground">
 
-                <TextView
-                    android:id="@+id/nameText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Name"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_primary_text"/>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
+                    android:src="@drawable/default_profile_image"
+                    app:civ_border_color="@color/color_grey_400"
+                    app:civ_border_width="1dp"
+                    android:layout_gravity="center_vertical"/>
 
-                <TextView
-                    android:id="@+id/phoneNumberText"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="phone number"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_secondary_text"/>
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/emailText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Email"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_secondary_text"/>
+                    <TextView
+                        android:id="@+id/nameText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_primary_text"/>
 
-                <TextView
-                    android:id="@+id/bloodGroupText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Blood group"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_secondary_text"/>
+                    <TextView
+                        android:id="@+id/phoneNumberText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="phone number"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_secondary_text"/>
+
+                    <TextView
+                        android:id="@+id/emailText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_secondary_text"/>
+
+                    <TextView
+                        android:id="@+id/bloodGroupText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Blood group"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_secondary_text"/>
+                </LinearLayout>
+
+
+
             </LinearLayout>
 
-
-
-        </LinearLayout>
+        </android.support.v7.widget.CardView>
 
         <!--
 
@@ -89,94 +104,106 @@
             android:layout_marginTop="16dp"
             android:background="@color/color_grey_300" />-->
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal"
-            android:weightSum="3">
+            android:layout_margin="16dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="4dp">
 
-            <FrameLayout
-                android:id="@+id/callLayout"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="8dp"
-                android:background="@drawable/white_grey_border_bottom">
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:weightSum="3">
 
-                <TextView
-                    android:id="@+id/callText"
-                    android:layout_width="wrap_content"
+                <FrameLayout
+                    android:id="@+id/callLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Call"
-                    android:layout_marginStart="24dp"
-                    android:textSize="14sp" />
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    android:background="@drawable/white_grey_border_bottom"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="16dp"
-                    android:src="@drawable/ic_call_black_24dp"
-                    android:tint="@color/color_grey_600" />
+                    <TextView
+                        android:id="@+id/callText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Call"
+                        android:layout_marginStart="24dp"
+                        android:textSize="14sp" />
 
-            </FrameLayout>
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/ic_call_black_24dp"
+                        android:tint="@color/color_grey_600" />
 
-            <FrameLayout
-                android:id="@+id/msgLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="8dp"
-                android:background="@drawable/white_grey_border_bottom">
+                </FrameLayout>
 
-                <TextView
-                    android:id="@+id/smsText"
-                    android:layout_width="wrap_content"
+                <FrameLayout
+                    android:id="@+id/msgLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Sms"
-                    android:layout_marginStart="24dp"
-                    android:textSize="14sp" />
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    android:background="@drawable/white_grey_border_bottom"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="16dp"
-                    android:src="@drawable/ic_sms"
-                    android:tint="@color/color_grey_600" />
+                    <TextView
+                        android:id="@+id/smsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sms"
+                        android:layout_marginStart="16dp"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/ic_sms"
+                        android:tint="@color/color_grey_600" />
 
 
-            </FrameLayout>
+                </FrameLayout>
 
-            <FrameLayout
-                android:id="@+id/emailLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="8dp"
-                android:background="@drawable/white_grey_border_bottom">
-
-                <TextView
-                    android:id="@+id/email"
-                    android:layout_width="wrap_content"
+                <FrameLayout
+                    android:id="@+id/emailLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Email"
-                    android:layout_marginStart="16dp"
-                    android:textSize="14sp" />
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    android:foreground="?android:attr/selectableItemBackground">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="16dp"
-                    android:src="@drawable/ic_email"
-                    android:tint="@color/color_grey_600" />
+                    <TextView
+                        android:id="@+id/email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:layout_marginStart="16dp"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="24dp"
+                        android:src="@drawable/ic_email"
+                        android:tint="@color/color_grey_600" />
+
+                </FrameLayout>
+
+            </LinearLayout>
 
 
-            </FrameLayout>
+        </android.support.v7.widget.CardView>
 
-        </LinearLayout>
 
 
     </LinearLayout>

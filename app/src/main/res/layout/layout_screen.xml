@@ -32,7 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="32dp"
-        android:text="@string/intro_description"
         android:layout_gravity="center_horizontal"
         android:padding="8dp"
         android:textColor="@color/intro_description_color"/>

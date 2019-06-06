@@ -1,17 +1,22 @@
 package com.example.abb.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.drm.DrmStore;
 import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -24,8 +29,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.abb.Adapters.DonorsAdapter;
 import com.example.abb.Interfaces.ItemClickListener;
+import com.example.abb.MainActivity;
 import com.example.abb.Model.Donor;
 import com.example.abb.R;
+import com.example.abb.Utils.Actions;
 import com.example.abb.Utils.Constants;
 import com.example.abb.Utils.MySingleton;
 
@@ -34,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,16 +91,6 @@ public class DonorsActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        // add horizontal line divider for each list item
-
-        /*
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                this,
-                linearLayoutManager.getOrientation()
-        );
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        */
-
         donorsAdapter = new DonorsAdapter(this, donors);
         recyclerView.setAdapter(donorsAdapter);
 
@@ -102,39 +100,83 @@ public class DonorsActivity extends AppCompatActivity {
                 new ItemClickListener() {
                     @Override
                     public void itemClick(View view, int position) {
-                        /*
+
                         Donor donor = donors.get(position);
                         Intent detailIntent = new Intent(DonorsActivity.this, DonorDetailsActivity.class);
                         detailIntent.putExtra("Donor", (Parcelable) donor);
                         startActivity(detailIntent);
                         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        */
 
-                        switch (view.getId()){
-                            case R.id.callIcon:
-                                Toast.makeText(DonorsActivity.this, "Call", Toast.LENGTH_SHORT).show();
-                                break;
+                    }
+                }
+        );
 
-                            case R.id.smsIcon:
-                                Toast.makeText(DonorsActivity.this, "Sms", Toast.LENGTH_SHORT).show();
-                                break;
+        donorsAdapter.setPopupClickListener(
+                new DonorsAdapter.PopupClickListener() {
+                    @SuppressLint("RestrictedApi")
+                    @Override
+                    public void popupClick(View view, int position) {
 
-                            case R.id.emailIcon:
-                                Toast.makeText(DonorsActivity.this, "Email", Toast.LENGTH_SHORT).show();
-                                break;
+                        final Donor donor = donors.get(position);
 
-                            default:
-                                Donor donor = donors.get(position);
-                                Intent detailIntent = new Intent(DonorsActivity.this, DonorDetailsActivity.class);
-                                detailIntent.putExtra("Donor", (Parcelable) donor);
-                                startActivity(detailIntent);
-                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        // creating the instance of PopupMenu
+                        PopupMenu popupMenu = new PopupMenu(DonorsActivity.this, view);
 
+                        // Inflating the Popup using xml file
+                        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+
+                        //registering popup with OnMenuItemClickListener
+                        popupMenu.setOnMenuItemClickListener(
+                                new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+                                        switch (menuItem.getItemId()){
+                                            case R.id.action_call:
+                                                Actions.onCallingDonor(
+                                                       DonorsActivity.this,
+                                                       donor,
+                                                        donorsLayout
+                                                );
+                                                return true;
+
+                                            case R.id.action_sms:
+                                                Actions.onMessagingDonor(
+                                                        DonorsActivity.this,
+                                                        donor,
+                                                        donorsLayout
+                                                );
+                                                return true;
+
+                                            case R.id.action_email:
+                                                Actions.onEmailingDonor(
+                                                        DonorsActivity.this,
+                                                        donor,
+                                                        donorsLayout
+                                                );
+
+                                        }
+                                        return false;
+                                    }
+                                }
+                        );
+
+                        popupMenu.setGravity(Gravity.RIGHT);
+
+                        try {
+                            Field mFieldPopup= popupMenu.getClass().getDeclaredField("mPopup");
+                            mFieldPopup.setAccessible(true);
+                            MenuPopupHelper mPopup = (MenuPopupHelper) mFieldPopup.get(popupMenu);
+                            mPopup.setForceShowIcon(true);
+                        } catch (Exception e) {
                         }
+
+                        popupMenu.show(); // showing PopupMenu
                     }
                 }
         );
     }
+
 
     @Override
     public void onBackPressed() {

@@ -5,40 +5,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/coordinatorLayout"
     tools:context=".Activities.BecomeDonor">
 
     <include layout="@layout/app_bar"/>
 
     <LinearLayout
-        android:layout_width="256dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_marginTop="80dp">
+        android:layout_marginTop="70dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/query_text_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp">
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/search_query"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:inputType="text|textAutoComplete"
+                android:singleLine="true"
+                android:ellipsize="start"
+                android:backgroundTint="@color/color_red_400"/>
+
+        </android.support.design.widget.TextInputLayout>
 
         <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Location :"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:layout_gravity="start"/>
+            android:layout_height="wrap_content" />
 
-        <Spinner
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:id="@+id/spinner"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/spinner_boarder"
-            android:layout_gravity="center_horizontal">
+            android:layout_height="wrap_content">
 
-        </Spinner>
-
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
+    <!--
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         app:fabSize="normal"
@@ -50,5 +69,7 @@
         android:layout_marginBottom="40dp"
         android:layout_marginEnd="16dp"
         app:layout_anchorGravity="bottom|right|end"/>
+        -->
+
 
 </android.support.design.widget.CoordinatorLayout>

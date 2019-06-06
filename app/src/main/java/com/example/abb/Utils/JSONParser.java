@@ -1,9 +1,13 @@
 package com.example.abb.Utils;
 
+import com.example.abb.Model.Donor;
+import com.example.abb.Model.Hospital;
 import com.example.abb.Model.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class JSONParser {
 
@@ -33,4 +37,7 @@ public class JSONParser {
             return null;
         }
     }
+
+
+
 }

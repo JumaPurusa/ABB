@@ -43,29 +43,13 @@
                 android:layout_marginRight="16dp"/>
 
             <ImageView
-                android:id="@+id/callIcon"
+                android:id="@+id/popupIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_call_black_24dp"
-                android:tint="@color/color_primary"
-                android:layout_marginRight="24dp"/>
+                android:src="@drawable/ic_more_vert"
+                android:layout_marginRight="16dp"/>
 
-            <ImageView
-                android:id="@+id/smsIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_sms"
-                android:tint="@color/color_primary"
-                android:layout_marginRight="24dp"/>
-
-            <ImageView
-                android:id="@+id/emailIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_email"
-                android:tint="@color/color_primary"/>
         </LinearLayout>
-
 
 
         <View

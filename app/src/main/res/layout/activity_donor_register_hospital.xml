@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/coordinatorLayout"
+    tools:context=".Activities.DonorRegisterHospital">
+
+    <include layout="@layout/app_bar"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+
+        <TextView
+            android:id="@+id/informationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/hospital_information"
+            android:gravity="center"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/moreInformation"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/for_more_information"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/phoneText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_details"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/color_red_600"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/thanks"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/thank_you"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/saveLife"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save_life"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:layout_width="132dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_gradient_style"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="100dp"
+            android:id="@+id/doneButton"
+            android:text="Done"
+            android:textColor="#fff"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

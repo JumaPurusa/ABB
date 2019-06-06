@@ -7,12 +7,15 @@ public class Constants {
     public final static String LOGIN_URL = BASE_URL + "login.php";
     public final static String LOCATION_URL = BASE_URL + "get_locations_data.php";
     public final static String REQUEST_DONORS = BASE_URL + "get_donors.php/?";
+    public final static String HOSPITAL_SEARCH = BASE_URL + "hospital_search.php";
 
-    //public final static String FIRE_ID = "firebase_user_id";
+
     public final static String FIRST_NAME = "first_name";
     public final static String LAST_NAME = "last_name";
     public final static String USERNAME = "username";
     public final static String EMAIL = "email";
     public final static String PASSWORD = "password";
+
+    public final static String SEARCH_QUERY = "searchQuery";
 
 }

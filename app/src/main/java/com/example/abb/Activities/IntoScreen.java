@@ -70,9 +70,9 @@ public class IntoScreen extends AppCompatActivity {
         };
 
         String[] intro_descs = {
-                getString(R.string.intro_description),
-                getString(R.string.intro_description),
-                getString(R.string.intro_description)
+                getString(R.string.intro_description_request_blood),
+                getString(R.string.intro_description_become_donor),
+                getString(R.string.intro_description_chat)
         };
 
         introItems = new ArrayList<>();

@@ -22,6 +22,15 @@ public class DonorsAdapter extends RecyclerView.Adapter<DonorsAdapter.MyViewHold
     private List<Donor> donors;
     private Context mContext;
     private ItemClickListener itemClickListener;
+    private PopupClickListener popupClickListener;
+
+    public void setPopupClickListener(PopupClickListener popupClickListener) {
+        this.popupClickListener = popupClickListener;
+    }
+
+    public interface PopupClickListener{
+        public void popupClick(View view, int position);
+    }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
@@ -47,6 +56,16 @@ public class DonorsAdapter extends RecyclerView.Adapter<DonorsAdapter.MyViewHold
         //myViewHolder.nameText.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fading_transition_animation));
         myViewHolder.nameText.setText(donor.getName());
 
+        myViewHolder.popupIcon.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(popupClickListener != null)
+                            popupClickListener.popupClick(v, position);
+                    }
+                }
+        );
+
         myViewHolder.itemView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -66,15 +85,13 @@ public class DonorsAdapter extends RecyclerView.Adapter<DonorsAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         private TextView nameText;
-        private ImageView callIcon, smsIcon, emailIcon;
+        private ImageView popupIcon;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
              nameText = itemView.findViewById(R.id.nameText);
-             callIcon = itemView.findViewById(R.id.callIcon);
-             smsIcon = itemView.findViewById(R.id.smsIcon);
-             emailIcon = itemView.findViewById(R.id.emailIcon);
+             popupIcon = itemView.findViewById(R.id.popupIcon);
         }
     }
 }
