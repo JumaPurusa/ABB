@@ -1,11 +1,7 @@
 package com.example.abb.Activities;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -14,45 +10,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
+import com.android.volley.Network;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
-import com.example.abb.Dialogs.LoadingDialog;
-import com.example.abb.Model.User;
 import com.example.abb.R;
 import com.example.abb.Utils.Constants;
-import com.example.abb.Utils.DatabaseMethods;
 import com.example.abb.Utils.DialogDisplay;
-import com.example.abb.Utils.JSONParser;
 import com.example.abb.Utils.MySingleton;
 import com.example.abb.Utils.NetworkUtils;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +57,7 @@ public class Registration extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
-
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +135,7 @@ public class Registration extends AppCompatActivity {
                             else
                                 Snackbar.make(registerLayout,
                                         "No Connection",
-                                        2000);
+                                        2000).show();
 
 
                         }
@@ -156,7 +144,20 @@ public class Registration extends AppCompatActivity {
                     }
         );
 
+        // Instantiate the cache
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
 
+        // Set up the network to use HttpURLConnection as the HTTP client.
+        Network network = new BasicNetwork(new HurlStack());
+
+        // Instantiate the RequestQueue with the cache and network.
+        requestQueue = new RequestQueue(cache, network);
+
+        // Start the queue
+        requestQueue.start();
+
+        //requestQueue = MySingleton.getInstance(getApplicationContext())
+                //.getRequestQueue();
 
     }
 
@@ -167,20 +168,28 @@ public class Registration extends AppCompatActivity {
         if(!progressDialog.isShowing())
             progressDialog.show();
 
-        progressDialog.findViewById(R.id.cancelText).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                }
-        );
-
         registerTask(firstNameEdit.getText().toString(),
                 lastNameEdit.getText().toString(),
                 usernameEdit.getText().toString(),
                 emailEdit.getText().toString(),
                 passwordEdit.getText().toString());
+
+        progressDialog.findViewById(R.id.cancelText).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        requestQueue = MySingleton.getInstance(getApplicationContext()).
+                                getRequestQueue();
+                        if(requestQueue != null) {
+                            requestQueue.cancelAll(TAG);
+
+                            if(progressDialog.isShowing())
+                                progressDialog.dismiss();
+                        }
+
+                    }
+                }
+        );
 
     }
 
@@ -235,18 +244,26 @@ public class Registration extends AppCompatActivity {
 
     private void onAuthenticationFailure(String message){
 
-        firstNameEdit.setText(""); // clear first name
-        lastNameEdit.setText(""); // clear last name
-        usernameEdit.setText(""); // clear username
-        emailEdit.setText(""); // clear email
-        passwordEdit.setText(""); // clear password
-        confirmPassEdit.setText(""); // clear confirm password
+        if(message.contains("Error in registering, another account is using the email"))
+            emailEdit.setText(""); // clear email
+        else if(message.contains("Error in registering. Probably the username already exists"))
+            usernameEdit.setText(""); // clear username
+        else if(message.contains("Error in registering. data was not inserted")){
+            firstNameEdit.setText(""); // clear first name
+            lastNameEdit.setText(""); // clear last name
+            usernameEdit.setText(""); // clear username
+            emailEdit.setText(""); // clear email
+            passwordEdit.setText(""); // clear password
+            confirmPassEdit.setText(""); // clear confirm password
+        }else if(message.contains("Error in registering. Email Address not valid")){
+            emailEdit.setText(""); // clear email
+        }
 
         showSnackMessage(message,
                 registerLayout);
     }
 
-    private void onSuccessRegister(String message){
+    private void onSuccessRegister(){
 
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -254,17 +271,8 @@ public class Registration extends AppCompatActivity {
         editor.putString("password", passwordEdit.getText().toString());
         editor.apply();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Registration.this);
-        builder.setMessage(message);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                 startActivity(new Intent(Registration.this, NextToUploadActivity.class));
-                 finish();
-            }
-        });
-
-        builder.create().show();
+        startActivity(new Intent(Registration.this, NextToUploadActivity.class));
+        finish();
 
     }
 
@@ -304,7 +312,7 @@ public class Registration extends AppCompatActivity {
 
                     if (success == 1) {
 
-                        onSuccessRegister(message);
+                        onSuccessRegister();
                     }
 
                 }
@@ -351,6 +359,7 @@ public class Registration extends AppCompatActivity {
             }
         };
 
+        stringRequest.setTag(TAG);
         MySingleton.getInstance(Registration.this).addToRequestQueue(stringRequest);
 
     }
@@ -362,6 +371,12 @@ public class Registration extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        requestQueue = MySingleton.getInstance(getApplicationContext()).
+                getRequestQueue();
+
+        if(requestQueue != null)
+            requestQueue.cancelAll(TAG);
 
         if(getIntent().hasExtra("login")){
             finish();
@@ -376,7 +391,10 @@ public class Registration extends AppCompatActivity {
 
         if(item.getItemId() == android.R.id.home){
             onBackPressed();
+            return true;
+
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -391,6 +409,14 @@ public class Registration extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
+
+        requestQueue = MySingleton.getInstance(getApplicationContext()).
+                getRequestQueue();
+
+        if(requestQueue != null)
+            requestQueue.cancelAll(TAG);
     }
 
 

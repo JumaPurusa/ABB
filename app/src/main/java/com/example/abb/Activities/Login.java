@@ -1,6 +1,6 @@
- package com.example.abb.Activities;
+package com.example.abb.Activities;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -16,20 +16,24 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
+import com.android.volley.Network;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.example.abb.MainActivity;
 import com.example.abb.Model.User;
@@ -39,20 +43,13 @@ import com.example.abb.Utils.DialogDisplay;
 import com.example.abb.Utils.JSONParser;
 import com.example.abb.Utils.MySingleton;
 import com.example.abb.Utils.NetworkUtils;
-import com.example.abb.Utils.SaveSettings;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
-    private static final String TAG = Login.class.getName();;
+    private static final String TAG = Login.class.getName();
 
     private EditText emailEdit, passwordEdit;
     private CoordinatorLayout relativeLayout;
@@ -60,6 +57,7 @@ public class Login extends AppCompatActivity {
 
     private AlertDialog progressDialog;
 
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +90,13 @@ public class Login extends AppCompatActivity {
         findViewById(R.id.regBtn).setOnClickListener(new View.OnClickListener( ) {
             @Override
             public void onClick(View v) {
+
                 Intent registerIntent = new Intent(Login.this, Registration.class);
                 registerIntent.putExtra("login", "login");
                 startActivity(registerIntent);
                 overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
+                onClearEditText();
             }
         });
 
@@ -121,9 +122,21 @@ public class Login extends AppCompatActivity {
                     else
                         Snackbar.make(relativeLayout,
                                 "No Connection",
-                                2000);
+                                2000).show();
             }
         });
+
+        // Instantiate the cache
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+
+        // Set up the network to use HttpURLConnection as the HTTP client.
+        Network network = new BasicNetwork(new HurlStack());
+
+        // Instantiate the RequestQueue with the cache and network.
+        requestQueue = new RequestQueue(cache, network);
+
+        // Start the queue
+        requestQueue.start();
 
     }
 
@@ -133,9 +146,25 @@ public class Login extends AppCompatActivity {
             progressDialog.show();
 
 
-
         loginTask(emailEdit.getText().toString(),
                 passwordEdit.getText().toString());
+
+        progressDialog.findViewById(R.id.cancelText).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        requestQueue = MySingleton.getInstance(getApplicationContext()).
+                                getRequestQueue();
+                        if(requestQueue != null) {
+                            requestQueue.cancelAll(TAG);
+
+                            if(progressDialog.isShowing())
+                                progressDialog.dismiss();
+                        }
+
+                    }
+                }
+        );
     }
 
     private boolean isFormValid(){
@@ -160,12 +189,11 @@ public class Login extends AppCompatActivity {
 
     private void onErrorOccurred(){
 
-        emailEdit.setText("");
-        passwordEdit.setText("");
+        onClearEditText();
 
         Snackbar.make(relativeLayout,
                 "Error Occured. Please try again",
-                5000);
+                5000).show();
     }
 
     private void onSuccessLogin(String response){
@@ -189,25 +217,28 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
 
-                        hideKeyboard();
+                        if(progressDialog.isShowing())
+                            progressDialog.dismiss();
+
                         if (response.contains("Please check your email to verify your account")) {
 
                             passwordEdit.setText("");
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
                             builder.setMessage(response + " Then Login again");
+                            builder.setCancelable(true);
 
                             builder.setPositiveButton("Ok", null);
-                            builder.create().show();
-
+                            Dialog dialog = builder.create();
+                            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogScale;
+                            dialog.show();
 
                         } else if (response.contains("Email or Password is not valid")) {
 
-                            emailEdit.setText("");
-                            passwordEdit.setText("");
+                            onClearEditText();
                             Snackbar.make(relativeLayout,
                                     response,
-                                    5000);
+                                    5000).show();
 
                         }else if(response == null || response.contains("<br>") || response.contains("<!DOCTYPE")){
 
@@ -245,6 +276,8 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this, "JSON Parse Error", Toast.LENGTH_SHORT).show();
                         }
 
+                        if(progressDialog.isShowing())
+                            progressDialog.dismiss();
                     }
                 }
 
@@ -266,13 +299,25 @@ public class Login extends AppCompatActivity {
             }
         };
 
+        stringRequest.setTag(TAG);
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
         finishAffinity();
+
+        requestQueue = MySingleton.getInstance(getApplicationContext())
+                .getRequestQueue();
+
+        if(requestQueue != null){
+            requestQueue.cancelAll(TAG);
+
+            if(progressDialog.isShowing())
+                progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -283,6 +328,15 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
+
+        requestQueue = MySingleton.getInstance(getApplicationContext())
+                .getRequestQueue();
+
+        if(requestQueue != null)
+            requestQueue.cancelAll(TAG);
     }
 
     private void sendToMainActivity(){
@@ -298,9 +352,11 @@ public class Login extends AppCompatActivity {
         ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE))
                 .hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-        //emailEdit.setText(""); // clear email text
-        //passwordEdit.setText(""); // clear password text
-        //emailEdit.requestFocus();
+    }
 
+    private void onClearEditText(){
+        emailEdit.setText("");
+        passwordEdit.setText("");
+        emailEdit.requestFocus();
     }
 }

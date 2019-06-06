@@ -7,12 +7,16 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.example.abb.Adapters.PhotoUploadSelectionAdapter;
+import com.example.abb.Dialogs.PhotoUploadSelectionDialog;
 import com.example.abb.MainActivity;
 import com.example.abb.R;
 
 public class ImageUpload extends AppCompatActivity {
 
+    private ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +37,17 @@ public class ImageUpload extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         onBackPressed();
+                    }
+                }
+        );
+
+        imageView = findViewById(R.id.profile_image);
+        imageView.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PhotoUploadSelectionDialog dialog = new PhotoUploadSelectionDialog();
+                        dialog.show(getSupportFragmentManager(), "dialog");
                     }
                 }
         );

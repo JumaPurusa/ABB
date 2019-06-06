@@ -50,7 +50,7 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:backgroundTint="@null"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textCapWords"
                 android:paddingStart="40dp"
                 android:singleLine="true"
                 android:ellipsize="start"/>
@@ -66,7 +66,7 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:backgroundTint="@null"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textCapWords"
                 android:paddingStart="40dp"
                 android:singleLine="true"
                 android:ellipsize="start"/>
@@ -95,7 +95,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/outline"
                 android:hint="Email"
-                android:inputType="textEmailAddress"
+                android:inputType="textEmailAddress|textAutoComplete"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:backgroundTint="@null"
