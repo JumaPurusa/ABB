@@ -123,12 +123,12 @@ public class BecomeDonor extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                       //loadData(s.toString());
+                       loadData(s.toString());
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                        loadData(s.toString());
+                        //loadData(s.toString());
                 }
             };
 

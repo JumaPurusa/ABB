@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -24,12 +26,23 @@ import com.example.abb.Interfaces.ItemClickListener;
 import com.example.abb.Model.Selection;
 import com.example.abb.R;
 import com.example.abb.Utils.DialogDisplay;
+import com.kosalgeek.android.photoutil.CameraPhoto;
+import com.kosalgeek.android.photoutil.GalleryPhoto;
+import com.kosalgeek.android.photoutil.ImageLoader;
+
+import java.io.IOException;
+
+import static android.app.Activity.RESULT_OK;
 
 public class PhotoUploadSelectionDialog extends DialogFragment {
 
 
-    private final  static String TAG = PhotoUploadSelectionDialog.class.getName();
+    private final static String TAG = PhotoUploadSelectionDialog.class.getName();
+    private final static int CAMERA_REQUEST_CODE = 1;
+    private final static int GALLERY_REQUEST_CODE = 2;
 
+    private CameraPhoto cameraPhoto;
+    private GalleryPhoto galleryPhoto;
 
     private RecyclerView recyclerView;
     private PhotoUploadSelectionAdapter adapter;
@@ -70,11 +83,18 @@ public class PhotoUploadSelectionDialog extends DialogFragment {
 
                         Selection selection = Selection.selections[position];
                         if(selection.getPosition() == 0){
-
+                            cameraPhoto = new CameraPhoto(getContext());
+                            try {
+                                startActivityForResult(cameraPhoto.takePhotoIntent(), CAMERA_REQUEST_CODE);
+                                cameraPhoto.addToGallery();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         if(selection.getPosition() == 1){
-
+                            galleryPhoto = new GalleryPhoto(getContext());
+                            startActivityForResult(galleryPhoto.openGalleryIntent(), GALLERY_REQUEST_CODE);
                         }
 
                         getDialog().dismiss();
@@ -94,4 +114,23 @@ public class PhotoUploadSelectionDialog extends DialogFragment {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+            if(requestCode == CAMERA_REQUEST_CODE){
+                String photoPath = cameraPhoto.getPhotoPath();
+
+                //Bitmap bitmap = ImageLoader.init().from(photoPath).requestSize().getBitmap()
+            }
+
+            if(requestCode == GALLERY_REQUEST_CODE){
+                Uri uri = data.getData();
+                galleryPhoto.setPhotoUri(uri);
+                String photoPath = galleryPhoto.getPath();
+            }
+        }
+
+    }
 }
