@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -82,19 +83,27 @@ public class PhotoUploadSelectionDialog extends DialogFragment {
                     public void itemClick(View view, int position) {
 
                         Selection selection = Selection.selections[position];
+
                         if(selection.getPosition() == 0){
-                            cameraPhoto = new CameraPhoto(getContext());
+                            galleryPhoto = new GalleryPhoto(getActivity());
+                            getActivity().startActivityForResult(galleryPhoto.openGalleryIntent(), GALLERY_REQUEST_CODE);
+                        }
+
+
+                        if(selection.getPosition() == 1){
+                            /*
+                            cameraPhoto = new CameraPhoto(getActivity());
                             try {
-                                startActivityForResult(cameraPhoto.takePhotoIntent(), CAMERA_REQUEST_CODE);
+                                getActivity().startActivityForResult(cameraPhoto.takePhotoIntent(), CAMERA_REQUEST_CODE);
                                 cameraPhoto.addToGallery();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        }
-
-                        if(selection.getPosition() == 1){
-                            galleryPhoto = new GalleryPhoto(getContext());
-                            startActivityForResult(galleryPhoto.openGalleryIntent(), GALLERY_REQUEST_CODE);
+                            */
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+                            //camera.setTextColor(Color.parseColor("#E6392F"));
+                            //camera.setSelected(true);
                         }
 
                         getDialog().dismiss();
@@ -120,9 +129,19 @@ public class PhotoUploadSelectionDialog extends DialogFragment {
 
         if(resultCode == RESULT_OK){
             if(requestCode == CAMERA_REQUEST_CODE){
-                String photoPath = cameraPhoto.getPhotoPath();
+                //String photoPath = cameraPhoto.getPhotoPath();
 
                 //Bitmap bitmap = ImageLoader.init().from(photoPath).requestSize().getBitmap()
+                try{
+                    if(data.hasExtra("data")){
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+
+                    }
+
+                }catch (NullPointerException e){
+
+                }
+
             }
 
             if(requestCode == GALLERY_REQUEST_CODE){
