@@ -2,10 +2,18 @@ package com.example.abb;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,33 +24,35 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.abb.Activities.BecomeDonor;
 import com.example.abb.Activities.ChatRoom;
+import com.example.abb.Activities.FeedbackActivity;
 import com.example.abb.Activities.Notifications;
 import com.example.abb.Activities.ProfileActivity;
 import com.example.abb.Activities.RequestBlood;
 import com.example.abb.Adapters.SlideImageAdapter;
+import com.example.abb.Fragments.HomeFragment;
+import com.example.abb.Fragments.ProfileFragment;
+import com.example.abb.Model.User;
 import com.example.abb.Utils.DialogDisplay;
+import com.example.abb.Utils.SaveSettings;
+import com.google.gson.Gson;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private final static String TAG = MainActivity.class.getName();
     private Context mContext = MainActivity.this;
 
-    private AppBarLayout appBarLayout;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-    private Toolbar toolbar;
-    private ViewPager viewPager;
-    private CardView requestBloodCard, becomeDonorCard, chartRoomCard, notificationsCard;
+    public DrawerLayout drawer;
+    private NavigationView navigationView;
 
-    boolean expandActionBar = true;
-    private int dotscount;
-    private ImageView[] dots;
-    private LinearLayout sliderDotPanel;
+    private SharedPreferences sharedPreferences;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,178 +60,114 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        toolbar = findViewById(R.id.toolbar);
+        sharedPreferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setPadding(0,0,0,0);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle(getString(R.string.app_name));
-        getSupportActionBar().setHomeButtonEnabled(true);
+        String userJsonString = sharedPreferences.getString("profile", null);
+        if(userJsonString != null);
+            user = new Gson().fromJson(userJsonString, User.class);
 
+        drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this,
+                drawer,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
-        appBarLayout = findViewById(R.id.appBar);
-        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        onDrawerProfileSet();
 
-                if(Math.abs(i) > 300){
-                    expandActionBar = false;
-                    //collapsingToolbarLayout.setTitle("AfyaPlus");
-                    //invalidateOptionsMenu();
-                }else{
-                    expandActionBar = true;
-                    //collapsingToolbarLayout.setTitle("AfyaPlus");
-                    //invalidateOptionsMenu();
-                }
-            }
-        });
-
-        viewPager = findViewById(R.id.slide_page);
-        SlideImageAdapter slideImageAdapter = new SlideImageAdapter(getApplicationContext());
-        viewPager.setAdapter(slideImageAdapter);
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new MyTimerTask(), 2000, 4000);
-
-        sliderDotPanel = findViewById(R.id.slide_dot_panel);
-
-        dotscount = slideImageAdapter.getCount();
-        dots = new ImageView[dotscount];
-
-        for(int i=0; i<dots.length; i++){
-
-            dots[i] = new ImageView(getApplicationContext());
-            dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
-
-            LinearLayout.LayoutParams params
-                    = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            params.setMargins(8, 0, 8, 0);
-            sliderDotPanel.addView(dots[i], params);
+        if(savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.mainContentPane, new HomeFragment())
+                    .commit();
         }
-
-        dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-                for(int i=0; i<dotscount; i++){
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.nonactive_dot));
-                }
-
-                dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext()
-                        , R.drawable.active_dot));
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
-
-        findViewById(R.id.request_blood).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(mContext, RequestBlood.class));
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    }
-                }
-        );
-
-        findViewById(R.id.become_donor).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(mContext, BecomeDonor.class));
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    }
-                }
-        );
-
-        findViewById(R.id.chart_room).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(mContext, ChatRoom.class));
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    }
-                }
-        );
-
-        findViewById(R.id.notifications).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(mContext, Notifications.class));
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    }
-                }
-        );
 
 
     }
 
-    public class MyTimerTask extends TimerTask {
+    private void onDrawerProfileSet(){
 
-        @Override
-        public void run() {
+        View headerView = navigationView.getHeaderView(0);
+        TextView fullName = headerView.findViewById(R.id.fullName);
+        TextView username = headerView.findViewById(R.id.username);
 
-            try{
+        // Set student profile on drawer
+        if (user == null)
+            return;
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(viewPager.getCurrentItem() == 0){
-                            viewPager.setCurrentItem(1);
-                        }else if(viewPager.getCurrentItem() == 1){
-                            viewPager.setCurrentItem(2);
-                        }else if(viewPager.getCurrentItem() == 2){
-                            viewPager.setCurrentItem(3);
-                        }else{
-                            viewPager.setCurrentItem(0);
-                        }
-                    }
-                });
-
-            }catch (NullPointerException e){
-                e.printStackTrace();
-            }
-
-        }
+        fullName.setText(user.getFirst_name() + " " + user.getLast_name());
+        username.setText(user.getUsername());
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
+    public void onBackPressed() {
+        drawer = findViewById(R.id.drawer_layout);
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }else{
+            super.onBackPressed();
+        }
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        int id = menuItem.getItemId();
+
+        if(id == R.id.ic_home){
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.replace(R.id.mainContentPane, new HomeFragment());
+            ft.commit();
+
+        }else if(id == R.id.ic_profile){
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.mainContentPane, new ProfileFragment())
+                    .commit();
+
+
+        }else if(id == R.id.ic_feedback){
+
+
+            Intent settingsIntent = new Intent(this, FeedbackActivity.class);
+            startActivity(settingsIntent);
+            //foverridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+
+        }else if(id == R.id.ic_logout){
+
+            logout();
+            /*
+            Intent aboutIntent = new Intent(this, About.class);
+            startActivity(aboutIntent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            */
+        }
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-
-            case R.id.ic_profile:
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                return true;
-
-            case R.id.ic_logout:
-                logout();
-                return true;
-
-        }
-        return super.onOptionsItemSelected(item);
+    public DrawerLayout getDrawer(){
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        return drawerLayout;
     }
+
+
 
 
     private void logout() {
@@ -241,26 +187,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();
-    }
 
-    /**
-     * setup Firebase Authentication
-     */
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-    }
 }

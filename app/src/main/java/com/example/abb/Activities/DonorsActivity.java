@@ -167,7 +167,7 @@ public class DonorsActivity extends AppCompatActivity {
                             Field mFieldPopup= popupMenu.getClass().getDeclaredField("mPopup");
                             mFieldPopup.setAccessible(true);
                             MenuPopupHelper mPopup = (MenuPopupHelper) mFieldPopup.get(popupMenu);
-                            mPopup.setForceShowIcon(true);
+                            //mPopup.setForceShowIcon(true);
                         } catch (Exception e) {
                         }
 

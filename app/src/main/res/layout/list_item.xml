@@ -20,7 +20,7 @@
             android:layout_height="48dp"
             android:src="@drawable/default_profile_image"
             app:civ_border_width="1dp"
-            app:civ_border_color="@color/color_grey_200"/>
+            app:civ_border_color="@color/color_grey_300"/>
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -46,7 +46,8 @@
                 android:id="@+id/popupIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_more_vert"
+                android:src="@drawable/ic_more_horiz"
+                android:tint="@color/color_primary"
                 android:layout_marginRight="16dp"/>
 
         </LinearLayout>

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">ABB</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="please_fill_all_the_field">Please fill all the required field</string>
     <string name="password_matches">Passwords do not matches</string>
@@ -50,4 +52,12 @@
     <string name="thank_you">Thanks in advance</string>
     <string name="save_life">\"Give Blood Save Life\"</string>
     <string name="contact_dialog_string">You are about to call \"%s\ hospital\" via phone number \"%s\"</string>
+
+    <!-- MainActivity Navigation drawer -->
+    <string name="home">Home</string>
+    <string name="profile">profile</string>
+    <string name="logout">Logout</string>
+    <string name="about">About</string>
+    <string name="feedback">Feedback</string>
+    <string name="title_activity_feedback">FeedbackActivity</string>
 </resources>

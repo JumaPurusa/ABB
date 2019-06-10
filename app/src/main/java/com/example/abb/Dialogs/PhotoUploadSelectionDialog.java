@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.abb.Activities.Login;
 import com.example.abb.Adapters.PhotoUploadSelectionAdapter;
@@ -31,6 +32,7 @@ import com.kosalgeek.android.photoutil.CameraPhoto;
 import com.kosalgeek.android.photoutil.GalleryPhoto;
 import com.kosalgeek.android.photoutil.ImageLoader;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
@@ -39,8 +41,9 @@ public class PhotoUploadSelectionDialog extends DialogFragment {
 
 
     private final static String TAG = PhotoUploadSelectionDialog.class.getName();
-    private final static int CAMERA_REQUEST_CODE = 1;
-    private final static int GALLERY_REQUEST_CODE = 2;
+    public final static int CAMERA_REQUEST_CODE = 1;
+    public final static int GALLERY_REQUEST_CODE = 2;
+    private Context mContext;
 
     private CameraPhoto cameraPhoto;
     private GalleryPhoto galleryPhoto;
@@ -48,10 +51,31 @@ public class PhotoUploadSelectionDialog extends DialogFragment {
     private RecyclerView recyclerView;
     private PhotoUploadSelectionAdapter adapter;
 
+    public OnImageReturnToActivity onImageReturnToActivity;
+
+    public void setOnImageReturn(OnImageReturnToActivity onImageReturn) {
+        this.onImageReturnToActivity = onImageReturn;
+    }
+
     public PhotoUploadSelectionDialog(){
 
     }
 
+    @SuppressLint("ValidFragment")
+    public PhotoUploadSelectionDialog(Activity activity){
+        this.mContext = activity;
+    }
+
+    public interface OnImageReturnToActivity{
+
+        public void onImageReturn(String photoPath);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+    }
 
     @Nullable
     @Override
@@ -129,25 +153,30 @@ public class PhotoUploadSelectionDialog extends DialogFragment {
 
         if(resultCode == RESULT_OK){
             if(requestCode == CAMERA_REQUEST_CODE){
-                //String photoPath = cameraPhoto.getPhotoPath();
 
-                //Bitmap bitmap = ImageLoader.init().from(photoPath).requestSize().getBitmap()
                 try{
                     if(data.hasExtra("data")){
-                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                       // Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        //Bitmap bitmap = ImageLoader.init().from((String)data.getExtras().get("data"))
+                                //.requestSize(96,96).getBitmap();
+                        onImageReturnToActivity.onImageReturn(String.valueOf(data.getData()));
+                        Toast.makeText(mContext, String.valueOf(data.getData()), Toast.LENGTH_SHORT).show();
 
                     }
 
                 }catch (NullPointerException e){
 
                 }
-
             }
 
             if(requestCode == GALLERY_REQUEST_CODE){
                 Uri uri = data.getData();
                 galleryPhoto.setPhotoUri(uri);
                 String photoPath = galleryPhoto.getPath();
+
+                //Bitmap bitmap = ImageLoader.init().from(photoPath).requestSize(96,96).getBitmap();
+                onImageReturnToActivity.onImageReturn(photoPath);
+                Toast.makeText(mContext, photoPath, Toast.LENGTH_SHORT).show();
             }
         }
 

@@ -15,8 +15,12 @@
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
 
 
-        <item name="android:windowEnterTransition" tools:targetApi="lollipop">@transition/fading_transition</item>
-        <item name="android:windowExitTransition" tools:targetApi="lollipop">@transition/fading_transition</item>
+        <item name="android:windowEnterTransition" tools:targetApi="lollipop">
+            @transition/fading_transition
+        </item>
+        <item name="android:windowExitTransition" tools:targetApi="lollipop">
+            @transition/fading_transition
+        </item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme">
@@ -48,5 +52,36 @@
         <item name="android:windowEnterAnimation">@anim/scale_in</item>
         <item name="android:windowExitAnimation">@anim/scale_out</item>
     </style>
+
+    <style name="NavDrawerTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+    </style>
+
+    <!-- collapsingAppBar -->
+    <style name="ExpandedTitleTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">#FFFF</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+    </style>
+
+    <!-- collapsingAppBar -->
+    <style name="CollapsedTitleTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">#FFF</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 
 </resources>

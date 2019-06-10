@@ -3,8 +3,6 @@ package com.example.abb.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.abb.Fragments.HostpitalsFragment;
-
 import java.io.Serializable;
 
 public class Hospital implements Parcelable, Serializable {
