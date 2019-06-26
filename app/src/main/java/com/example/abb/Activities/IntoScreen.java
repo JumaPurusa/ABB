@@ -94,7 +94,33 @@ public class IntoScreen extends AppCompatActivity {
         btnNext = findViewById(R.id.button_next);
         btnNext.setOnClickListener(nextButtonClickListener);
 
+        tabIndicator.addOnTabSelectedListener(
+                new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+
+                        if(tab.getPosition() == introItems.size() - 1)
+                            loadLastScreen();
+                        else{
+                            unloadLastScreen();
+                        }
+
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                }
+        );
         // when another tab is selected
+
+        /*
         tabIndicator.addOnTabSelectedListener(
                 new TabLayout.BaseOnTabSelectedListener() {
                     @Override
@@ -116,7 +142,7 @@ public class IntoScreen extends AppCompatActivity {
 
                     }
                 }
-        );
+        );*/
 
 
         // Get started button click listener

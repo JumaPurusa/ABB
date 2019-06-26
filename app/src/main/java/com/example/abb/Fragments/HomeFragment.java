@@ -3,6 +3,7 @@ package com.example.abb.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import com.example.abb.Activities.BecomeDonor;
 import com.example.abb.Activities.ChatRoom;
 import com.example.abb.Activities.Notifications;
+import com.example.abb.Activities.ProfileActivity;
 import com.example.abb.Activities.RequestBlood;
 import com.example.abb.Adapters.SlideImageAdapter;
 import com.example.abb.MainActivity;
@@ -162,7 +164,7 @@ public class HomeFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(getContext(), ChatRoom.class));
+                        startActivity(new Intent(getContext(), ProfileActivity.class));
                         getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     }
                 }

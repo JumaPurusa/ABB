@@ -3,6 +3,7 @@ package com.example.abb.Activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -25,14 +26,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abb.Adapters.PhotoUploadSelectionAdapter;
 import com.example.abb.Dialogs.PhotoUploadSelectionDialog;
 import com.example.abb.Interfaces.ItemClickListener;
 import com.example.abb.Model.Selection;
+import com.example.abb.Model.User;
 import com.example.abb.R;
 import com.example.abb.Utils.Permissions;
+import com.google.gson.Gson;
 import com.kosalgeek.android.photoutil.CameraPhoto;
 import com.kosalgeek.android.photoutil.GalleryPhoto;
 import com.kosalgeek.android.photoutil.ImageLoader;
@@ -45,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final int VERIFY_PERMISSION_REQUEST = 0;
     private ImageView imageView;
+    private TextView usernameText, emailText, passwordText, phoneText;
 
     public final static int CAMERA_REQUEST_CODE = 1;
     public final static int GALLERY_REQUEST_CODE = 2;
@@ -54,7 +59,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static RecyclerView recyclerView;
     private static PhotoUploadSelectionAdapter adapter;
+    private static SharedPreferences sharedPreferences;
 
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +70,12 @@ public class ProfileActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         setContentView(R.layout.activity_profile);
+
+        sharedPreferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+
+        String userJsonString = sharedPreferences.getString("profile", null);
+        if(userJsonString != null);
+        user = new Gson().fromJson(userJsonString, User.class);
 
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 
@@ -77,6 +90,8 @@ public class ProfileActivity extends AppCompatActivity {
         }else{
             verifyingPermission(Permissions.PERMISSIONS);
         }
+
+        onSettingWidgets();
     }
 
     private void onImageViewClicked(){
@@ -94,6 +109,19 @@ public class ProfileActivity extends AppCompatActivity {
         );
     }
 
+    private void onSettingWidgets(){
+
+        usernameText = findViewById(R.id.usernameText);
+        emailText = findViewById(R.id.emailText);
+        passwordText = findViewById(R.id.passwordText);
+        phoneText = findViewById(R.id.phoneText);
+
+        usernameText.setText(user.getUsername());
+        emailText.setText(user.getEmail());
+        passwordText.setText("Password");
+        phoneText.setText(user.getPhone());
+
+    }
 
     @Override
     public void onBackPressed() {

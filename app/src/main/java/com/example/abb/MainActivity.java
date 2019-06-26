@@ -3,6 +3,8 @@ package com.example.abb;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -40,6 +42,7 @@ import com.example.abb.Utils.DialogDisplay;
 import com.example.abb.Utils.SaveSettings;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -134,16 +137,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }else if(id == R.id.ic_profile){
 
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.mainContentPane, new ProfileFragment())
-                    .commit();
+            //getSupportFragmentManager().beginTransaction()
+                    //.replace(R.id.mainContentPane, new ProfileFragment())
+                    //.commit();
+            startActivity(new Intent(this, ProfileActivity.class));
 
 
         }else if(id == R.id.ic_feedback){
 
+            ApplicationInfo apk = getApplicationContext().getApplicationInfo();
+            String apkPath = apk.sourceDir;
 
-            Intent settingsIntent = new Intent(this, FeedbackActivity.class);
-            startActivity(settingsIntent);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setData(Uri.fromFile(new File(apkPath)));
+            shareIntent.setType("*/*");
+            startActivity(Intent.createChooser(shareIntent, "SHARE APP USING"));
+
+
+            //Intent settingsIntent = new Intent(this, FeedbackActivity.class);
+            //startActivity(settingsIntent);
             //foverridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
 

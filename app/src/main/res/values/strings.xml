@@ -60,4 +60,6 @@
     <string name="about">About</string>
     <string name="feedback">Feedback</string>
     <string name="title_activity_feedback">FeedbackActivity</string>
+
+    <string name="delete_notification_confirm">"Are sure you want to delete notification \"%s\"</string>
 </resources>
