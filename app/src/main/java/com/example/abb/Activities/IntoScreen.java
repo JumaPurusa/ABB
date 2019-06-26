@@ -66,7 +66,7 @@ public class IntoScreen extends AppCompatActivity {
         String[] introTitles = {
                 getString(R.string.request_blood),
                 getString(R.string.become_donor),
-                getString(R.string.chart_room)
+                "Notifications"
         };
 
         String[] intro_descs = {
