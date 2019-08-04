@@ -18,4 +18,4 @@ A mobile application which helps to increase the number and willingness of blood
 
 &copy; Juma M Purusa, Software Engineer
 
-Licensed under the [](LICENSE).
+Licensed under the [GPL-3.0](LICENSE).
